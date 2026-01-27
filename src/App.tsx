@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GameState, Habit, Choice } from './gameState'
 import { initialGameState, getBubbleState, BADGES, BUBBLE_STATE_INFO } from './gameState'
@@ -9,10 +9,28 @@ import { BQNotification } from './components/BQNotification'
 import { AppShell } from './components/AppShell'
 import type { TabId } from './components/AppShell/NavBar'
 import { InsightsView, ProfileView, SettingsView, CompletedHomeView } from './components/Views'
+import { PresentationView } from './components/Presentation'
 import './index.css'
 
 
 function App() {
+  // Check if we're in presentation mode
+  const [isPresentationMode, setIsPresentationMode] = useState(
+    window.location.hash === '#presentatie'
+  )
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setIsPresentationMode(window.location.hash === '#presentatie')
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  // If presentation mode, render only the presentation
+  if (isPresentationMode) {
+    return <PresentationView />
+  }
   const [gameState, setGameState] = useState<GameState>(initialGameState)
   const [activeTab, setActiveTab] = useState<TabId>('home')
   const [notification, setNotification] = useState<{
