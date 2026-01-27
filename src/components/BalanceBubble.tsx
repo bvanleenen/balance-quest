@@ -54,6 +54,7 @@ function Bubble({ state, size, onClick }: BubbleProps) {
   const targetColor = useMemo(() => new THREE.Color(getStateColor(state)), [state])
   const currentColor = useRef(new THREE.Color(getStateColor(state)))
   const animation = getStateAnimation(state)
+  const isInitialized = useRef(false)
 
   const bubbleSize = size === 'small' ? 0.8 : size === 'medium' ? 1.0 : 1.2
 
@@ -70,6 +71,12 @@ function Bubble({ state, size, onClick }: BubbleProps) {
 
   useFrame(({ clock }) => {
     if (meshRef.current) {
+      // Set initial scale immediately on first frame to prevent "growing" animation
+      if (!isInitialized.current) {
+        meshRef.current.scale.setScalar(bubbleSize)
+        isInitialized.current = true
+      }
+
       // Breathing animation with state-specific speed
       const breathe = Math.sin(clock.elapsedTime * animation.breatheSpeed) * animation.bounce
       const scale = bubbleSize * (1 + breathe)
@@ -97,6 +104,7 @@ function Bubble({ state, size, onClick }: BubbleProps) {
     <Sphere
       ref={meshRef}
       args={[1, 64, 64]}
+      scale={bubbleSize}
       onClick={handleClick}
     >
       <MeshDistortMaterial
