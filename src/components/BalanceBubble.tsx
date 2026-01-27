@@ -342,6 +342,18 @@ function ClickHandler({ onClick }: { onClick?: () => void }) {
   return null
 }
 
+// Ensure true transparency for the scene
+function TransparentBackground() {
+  const { gl, scene } = useThree()
+
+  useEffect(() => {
+    gl.setClearColor(0x000000, 0)
+    scene.background = null
+  }, [gl, scene])
+
+  return null
+}
+
 interface BalanceBubbleProps {
   state?: BubbleState
   size?: 'full' | 'small' | 'medium'
@@ -362,7 +374,7 @@ export function BalanceBubble({
   const cameraPos = size === 'small' ? [0, 0, 3] : size === 'medium' ? [0, 0, 3.5] : [0, 0, 3.2]
 
   return (
-    <div className={`w-full h-full ${className}`}>
+    <div className={`w-full h-full ${className}`} style={{ background: 'transparent' }}>
       <Canvas
         camera={{ position: cameraPos as [number, number, number], fov: 45 }}
         dpr={[1, 1.5]}
@@ -373,6 +385,8 @@ export function BalanceBubble({
         }}
         style={{ background: 'transparent' }}
       >
+        {/* Ensure transparent background */}
+        <TransparentBackground />
 
         {/* Lighting */}
         <ambientLight intensity={0.4} />
