@@ -52,11 +52,13 @@ export interface Scene {
   intro: string
   text: string
   choices: Choice[]
+  relevantHabits?: Habit[] // Which habits this scene relates to for personalization
   bqResponses: Record<string, {
     message: string
     quote?: string
     bubbleChange?: BubbleColor
     badge?: string
+    habitMessage?: Partial<Record<Habit, string>> // Personalized messages per habit
   }>
 }
 

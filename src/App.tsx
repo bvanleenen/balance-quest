@@ -96,10 +96,23 @@ function App() {
       dayProgress: newDayProgress,
     }))
 
+    // Check for personalized habit message
+    let personalizedMessage = response.message.replace('{name}', gameState.playerName)
+    if (response.habitMessage) {
+      // Find first matching habit from user's selected habits
+      const matchingHabit = gameState.selectedHabits.find(
+        habit => response.habitMessage?.[habit]
+      )
+      if (matchingHabit && response.habitMessage[matchingHabit]) {
+        // Use personalized message for this habit
+        personalizedMessage = response.habitMessage[matchingHabit]!.replace('{name}', gameState.playerName)
+      }
+    }
+
     // Show notification directly (speech bubble from the balance bubble)
     const badge = response.badge ? BADGES[response.badge as keyof typeof BADGES] : undefined
     setNotification({
-      message: response.message.replace('{name}', gameState.playerName),
+      message: personalizedMessage,
       quote: response.quote,
       points: choice.points > 0 ? choice.points : undefined,
       badge: badge ? { name: badge.name, icon: badge.icon } : undefined,
