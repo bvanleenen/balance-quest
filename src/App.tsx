@@ -14,17 +14,17 @@ import './index.css'
 
 
 function App() {
-  // Check if we're in presentation mode
+  // Check if we're in presentation mode (path-based routing)
   const [isPresentationMode, setIsPresentationMode] = useState(
-    window.location.hash === '#presentatie'
+    window.location.pathname === '/presentatie'
   )
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setIsPresentationMode(window.location.hash === '#presentatie')
+    const handlePopState = () => {
+      setIsPresentationMode(window.location.pathname === '/presentatie')
     }
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
   // If presentation mode, render only the presentation
