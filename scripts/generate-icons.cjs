@@ -70,30 +70,34 @@ function generateIcon(size) {
   )
   ctx.fill()
 
-  // Eyes
-  const eyeRadius = bubbleRadius * 0.12
+  // Eyes - white with black pupils
+  const eyeRadius = bubbleRadius * 0.15
   const eyeY = centerY - bubbleRadius * 0.1
   const eyeSpacing = bubbleRadius * 0.35
+  const pupilRadius = eyeRadius * 0.5
 
-  // Left eye
-  ctx.fillStyle = '#1a1a1a'
+  // Left eye (white)
+  ctx.fillStyle = 'white'
   ctx.beginPath()
   ctx.arc(centerX - eyeSpacing, eyeY, eyeRadius, 0, Math.PI * 2)
   ctx.fill()
 
-  // Right eye
+  // Left pupil (black)
+  ctx.fillStyle = '#1a1a1a'
+  ctx.beginPath()
+  ctx.arc(centerX - eyeSpacing, eyeY, pupilRadius, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Right eye (white)
+  ctx.fillStyle = 'white'
   ctx.beginPath()
   ctx.arc(centerX + eyeSpacing, eyeY, eyeRadius, 0, Math.PI * 2)
   ctx.fill()
 
-  // Eye highlights
-  ctx.fillStyle = 'white'
-  const highlightRadius = eyeRadius * 0.4
+  // Right pupil (black)
+  ctx.fillStyle = '#1a1a1a'
   ctx.beginPath()
-  ctx.arc(centerX - eyeSpacing - eyeRadius * 0.2, eyeY - eyeRadius * 0.2, highlightRadius, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.beginPath()
-  ctx.arc(centerX + eyeSpacing - eyeRadius * 0.2, eyeY - eyeRadius * 0.2, highlightRadius, 0, Math.PI * 2)
+  ctx.arc(centerX + eyeSpacing, eyeY, pupilRadius, 0, Math.PI * 2)
   ctx.fill()
 
   // Smile
