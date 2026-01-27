@@ -996,6 +996,8 @@ body {
   flex-direction: column;
   min-height: 100vh;
   padding-bottom: calc(var(--nav-bar-height) + var(--space-lg));
+  /* Fixed width to prevent content-based sizing */
+  width: 100%;
   max-width: 500px;
   margin: 0 auto;
 }
@@ -1012,6 +1014,8 @@ body {
   /* Fixed height to prevent layout shift */
   height: 320px;
   min-height: 320px;
+  max-height: 320px;
+  flex-shrink: 0;
   background: linear-gradient(
     180deg,
     rgba(30, 41, 59, 0.95) 0%,
@@ -1057,6 +1061,10 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: var(--space-sm) var(--space-md);
+  /* Fixed height to prevent layout shift */
+  height: 48px;
+  min-height: 48px;
+  flex-shrink: 0;
   background: linear-gradient(
     90deg,
     rgba(232, 120, 74, 0.15) 0%,
@@ -1131,9 +1139,14 @@ body {
 /* Bubble area */
 .habitat-bubble-area {
   height: 240px;
+  min-height: 240px;
+  max-height: 240px;
+  width: 100%;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  /* Prevent any shrinking */
+  flex-shrink: 0;
 }
 
 /* Make the bubble fill the entire area */
@@ -1147,6 +1160,8 @@ body {
 
 .habitat-bubble-area canvas {
   background: transparent !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 
@@ -1177,14 +1192,18 @@ body {
   background: var(--color-bg-dark);
   padding: var(--space-sm) var(--space-md);
   padding-top: var(--safe-area-top);
+  /* Fixed dimensions to prevent layout shift */
+  width: 100%;
+  min-height: 360px;
 }
 
 .sticky-header-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 400px;
+  /* Fixed width instead of percentage */
+  width: 400px;
+  max-width: calc(100vw - 32px);
   margin: 0 auto;
 }
 
