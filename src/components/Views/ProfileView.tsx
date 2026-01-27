@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Smartphone, Coffee, Moon, Heart, BookOpen, Target, Users, Sunrise, Award, Lock } from 'lucide-react'
+import { Smartphone, Coffee, Moon, Heart, Activity, CheckSquare, Target, Users, Sunrise, Award, Lock } from 'lucide-react'
 import type { GameState, Habit } from '../../gameState'
 import { HABIT_LABELS, BADGES, getBubbleState, BUBBLE_STATE_INFO } from '../../gameState'
 
@@ -13,7 +13,8 @@ const HABIT_ICON_MAP: Record<string, React.ReactNode> = {
   Coffee: <Coffee size={18} />,
   Moon: <Moon size={18} />,
   Heart: <Heart size={18} />,
-  BookOpen: <BookOpen size={18} />,
+  Activity: <Activity size={18} />,
+  CheckSquare: <CheckSquare size={18} />,
 }
 
 // Map badge icons to Lucide components
@@ -30,7 +31,8 @@ const HABIT_ICONS: Record<Habit, string> = {
   'take-breaks': 'Coffee',
   'sleep-on-time': 'Moon',
   'me-time': 'Heart',
-  'school-balance': 'BookOpen',
+  'more-exercise': 'Activity',
+  'finish-tasks': 'CheckSquare',
 }
 
 export function ProfileView({ gameState }: ProfileViewProps) {

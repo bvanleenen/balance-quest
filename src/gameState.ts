@@ -11,14 +11,16 @@ export type Habit =
   | 'take-breaks'
   | 'sleep-on-time'
   | 'me-time'
-  | 'school-balance'
+  | 'more-exercise'
+  | 'finish-tasks'
 
 export const HABIT_LABELS: Record<Habit, string> = {
   'less-phone': 'Minder op mijn telefoon',
   'take-breaks': 'Genoeg pauzes nemen',
   'sleep-on-time': 'Op tijd naar bed',
   'me-time': 'Tijd voor mezelf',
-  'school-balance': 'Balans tussen school en vrije tijd',
+  'more-exercise': 'Meer bewegen',
+  'finish-tasks': 'Taken afmaken',
 }
 
 // Icon names map to Lucide React components
@@ -27,7 +29,8 @@ export const HABIT_ICONS: Record<Habit, string> = {
   'take-breaks': 'Coffee',
   'sleep-on-time': 'Moon',
   'me-time': 'Heart',
-  'school-balance': 'BookOpen',
+  'more-exercise': 'Activity',
+  'finish-tasks': 'CheckSquare',
 }
 
 export type ChoiceCategory = 'rest' | 'work' | 'social' | 'scroll' | 'neutral'

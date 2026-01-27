@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Smartphone, Coffee, Moon, Heart, BookOpen, Sparkles, Check } from 'lucide-react'
+import { Smartphone, Coffee, Moon, Heart, Activity, CheckSquare, Sparkles, Check } from 'lucide-react'
 import type { Habit } from '../gameState'
 import { HABIT_LABELS } from '../gameState'
 
@@ -10,7 +10,8 @@ const HABIT_ICON_COMPONENTS: Record<Habit, React.ReactNode> = {
   'take-breaks': <Coffee size={20} />,
   'sleep-on-time': <Moon size={20} />,
   'me-time': <Heart size={20} />,
-  'school-balance': <BookOpen size={20} />,
+  'more-exercise': <Activity size={20} />,
+  'finish-tasks': <CheckSquare size={20} />,
 }
 
 interface WelcomeScreenProps {
@@ -200,7 +201,7 @@ export function HabitsScreen({ onSubmit }: HabitsScreenProps) {
     )
   }
 
-  const habits: Habit[] = ['less-phone', 'take-breaks', 'sleep-on-time', 'me-time', 'school-balance']
+  const habits: Habit[] = ['less-phone', 'take-breaks', 'sleep-on-time', 'me-time', 'more-exercise', 'finish-tasks']
 
   return (
     <div className="flex-col p-lg" style={{ minHeight: '100%', position: 'relative', zIndex: 10 }}>
