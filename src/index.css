@@ -1009,6 +1009,9 @@ body {
   margin: var(--space-sm) 0;
   padding: 0;
   width: 100%;
+  /* Fixed height to prevent layout shift */
+  height: 320px;
+  min-height: 320px;
   background: linear-gradient(
     180deg,
     rgba(30, 41, 59, 0.95) 0%,
