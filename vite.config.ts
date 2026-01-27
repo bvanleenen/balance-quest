@@ -13,7 +13,7 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'Balance Quest',
-        short_name: 'BQ',
+        short_name: 'Bubble',
         description: 'Vind je balans met bewuste keuzes - Een demo voor gezonde gewoontes bij jongeren',
         start_url: '/',
         display: 'standalone',
