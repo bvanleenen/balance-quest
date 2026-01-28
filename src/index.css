@@ -1087,16 +1087,22 @@ body {
   font-weight: 500;
 }
 
-/* Bubble area - compact */
+/* Bubble area - for 3D canvas */
 .habitat-bubble-area {
-  height: 170px;
-  min-height: 170px;
+  height: 180px;
+  min-height: 180px;
   width: 100%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   flex-shrink: 0;
+}
+
+.bubble-3d-container {
+  position: absolute;
+  inset: 0;
+}
+
+.bubble-3d-container canvas {
+  background: transparent !important;
 }
 
 /* Badges row below habitat */

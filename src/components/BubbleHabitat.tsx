@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Star, Target, Coffee, Moon, Users, Sunrise, Clock, MessageCircle, Shield, Heart, Activity } from 'lucide-react'
-import { BalanceBubble } from './BalanceBubble'
+import { BalanceBubble3D } from './BalanceBubble3D'
 import type { BubbleState, BubbleExpression } from '../gameState'
 import { BADGES } from '../gameState'
 
@@ -60,14 +60,13 @@ export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, o
           </motion.div>
         </div>
 
-        {/* Bubble container - compact */}
-        <div className="habitat-bubble-area" onClick={onBubbleClick}>
-          <BalanceBubble
+        {/* Bubble container - 3D */}
+        <div className="habitat-bubble-area">
+          <BalanceBubble3D
             state={bubbleState}
             size="full"
             expression={expression}
-            showParticles={false}
-            showEyes={true}
+            onClick={onBubbleClick}
           />
         </div>
       </div>
