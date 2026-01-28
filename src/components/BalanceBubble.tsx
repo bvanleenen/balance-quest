@@ -108,7 +108,7 @@ function Bubble({ state, size, onClick }: BubbleProps) {
 
       // Smooth color transition
       currentColor.current.lerp(targetColor, 0.02)
-      const material = meshRef.current.material as THREE.MeshStandardMaterial
+      const material = meshRef.current.material as THREE.MeshBasicMaterial
       if (material.color) {
         material.color.copy(currentColor.current)
       }
