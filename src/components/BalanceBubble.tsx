@@ -481,9 +481,6 @@ export function BalanceBubble({
         {/* Main bubble */}
         <Bubble state={state} size={size} onClick={onClick} />
 
-        {/* Forehead shine/highlight */}
-        <ForeheadShine size={size} />
-
         {/* Face - gives the bubble personality */}
         {showEyes && <BubbleFace state={state} size={size} expression={expression} />}
 
