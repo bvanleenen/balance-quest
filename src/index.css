@@ -1006,15 +1006,23 @@ body {
    Bubble Habitat - Nintendo-inspired companion window
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Wrapper for habitat + badges below */
+.bubble-habitat-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
 .bubble-habitat {
   position: relative;
-  margin: var(--space-sm) 0;
+  margin: 0;
   padding: 0;
   width: 100%;
-  /* Fixed height to prevent layout shift */
-  height: 320px;
-  min-height: 320px;
-  max-height: 320px;
+  /* Compact height */
+  height: 180px;
+  min-height: 180px;
+  max-height: 180px;
   flex-shrink: 0;
   background: linear-gradient(
     180deg,
@@ -1022,56 +1030,31 @@ body {
     rgba(15, 23, 42, 0.98) 100%
   );
   border-radius: var(--radius-xl);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.15);
   overflow: hidden;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 8px 32px rgba(0, 0, 0, 0.3);
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* Decorative sparkles in corners */
-.habitat-sparkle {
-  position: absolute;
-  color: var(--color-primary-light);
-  opacity: 0.4;
-  z-index: 10;
-  animation: sparkle-float 3s ease-in-out infinite;
-}
 
-.habitat-sparkle-tl {
-  top: 8px;
-  left: 8px;
-  animation-delay: 0s;
-}
-
-.habitat-sparkle-tr {
-  top: 8px;
-  right: 8px;
-  animation-delay: 1.5s;
-}
-
-@keyframes sparkle-float {
-  0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
-  50% { opacity: 0.6; transform: scale(1.1) rotate(10deg); }
-}
-
-/* Header bar with points and badges */
+/* Header bar with points */
 .habitat-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: var(--space-sm) var(--space-md);
-  /* Fixed height to prevent layout shift */
-  height: 48px;
-  min-height: 48px;
+  padding: var(--space-xs) var(--space-md);
+  /* Compact header */
+  height: 32px;
+  min-height: 32px;
   flex-shrink: 0;
   background: linear-gradient(
     90deg,
-    rgba(232, 120, 74, 0.15) 0%,
+    rgba(232, 120, 74, 0.1) 0%,
     transparent 50%,
-    rgba(107, 203, 154, 0.1) 100%
+    rgba(107, 203, 154, 0.08) 100%
   );
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* Points display */
@@ -1104,48 +1087,15 @@ body {
   font-weight: 500;
 }
 
-/* Badges display */
-.habitat-badges {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.habitat-badge {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(232, 120, 74, 0.2);
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(232, 120, 74, 0.3);
-  font-size: 16px;
-  cursor: default;
-  transition: all 0.2s ease;
-}
-
-.habitat-badge:hover {
-  background: rgba(232, 120, 74, 0.3);
-  box-shadow: 0 0 12px rgba(232, 120, 74, 0.4);
-}
-
-.habitat-badges-empty {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-subtle);
-  font-style: italic;
-}
-
-/* Bubble area */
+/* Bubble area - compact */
 .habitat-bubble-area {
-  height: 240px;
-  min-height: 240px;
-  max-height: 240px;
+  height: 148px;
+  min-height: 148px;
+  max-height: 148px;
   width: 100%;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  /* Prevent any shrinking */
   flex-shrink: 0;
 }
 
@@ -1164,24 +1114,37 @@ body {
   height: 100% !important;
 }
 
-
-
-/* Footer line */
-.habitat-footer {
-  padding: var(--space-xs) var(--space-md);
+/* Badges row below habitat */
+.habitat-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  justify-content: center;
+  min-height: 24px;
 }
 
-.habitat-footer-line {
-  height: 3px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(232, 120, 74, 0.4) 20%,
-    rgba(244, 165, 116, 0.5) 50%,
-    rgba(107, 203, 154, 0.4) 80%,
-    transparent 100%
-  );
+.habitat-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(232, 120, 74, 0.15);
+  border: 1px solid rgba(232, 120, 74, 0.25);
   border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-light);
+  white-space: nowrap;
+}
+
+.habitat-badge-pill .badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.habitat-badge-pill .badge-name {
+  font-weight: 500;
 }
 
 /* Top section wrapper - sticky habitat */

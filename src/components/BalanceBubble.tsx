@@ -3,8 +3,24 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Sphere, MeshDistortMaterial, Billboard } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
-import type { BubbleState } from '../gameState'
+import type { BubbleState, BubbleExpression } from '../gameState'
 import { BUBBLE_STATE_INFO } from '../gameState'
+
+// Micro-expression modifiers
+function getExpressionModifiers(expression?: BubbleExpression) {
+  switch (expression) {
+    case 'curious':
+      return { eyeScale: 1.15, eyeTilt: 0.1, mouthType: 'o' as const, browRaise: 0.05 }
+    case 'concerned':
+      return { eyeScale: 1.0, eyeTilt: -0.1, mouthType: 'worried' as const, browRaise: -0.03 }
+    case 'supportive':
+      return { eyeScale: 1.05, eyeTilt: 0, mouthType: 'gentle' as const, browRaise: 0.02 }
+    case 'celebratory':
+      return { eyeScale: 1.2, eyeTilt: 0, mouthType: 'big-smile' as const, browRaise: 0.08 }
+    default:
+      return { eyeScale: 1.0, eyeTilt: 0, mouthType: null, browRaise: 0 }
+  }
+}
 
 // Get color for bubble state
 function getStateColor(state: BubbleState): string {
@@ -56,7 +72,8 @@ function Bubble({ state, size, onClick }: BubbleProps) {
   const animation = getStateAnimation(state)
   const isInitialized = useRef(false)
 
-  const bubbleSize = size === 'small' ? 0.8 : size === 'medium' ? 1.0 : 1.2
+  // Smaller bubble sizes
+  const bubbleSize = size === 'small' ? 0.6 : size === 'medium' ? 0.75 : 0.9
 
   // Handle click
   const handleClick = useCallback(() => {
@@ -95,7 +112,6 @@ function Bubble({ state, size, onClick }: BubbleProps) {
       const material = meshRef.current.material as THREE.MeshStandardMaterial
       if (material.color) {
         material.color.copy(currentColor.current)
-        material.emissive?.copy(currentColor.current)
       }
     }
   })
@@ -111,22 +127,45 @@ function Bubble({ state, size, onClick }: BubbleProps) {
         color={getStateColor(state)}
         distort={animation.distort}
         speed={1.5}
-        roughness={0.2}
-        metalness={0.3}
-        emissive={getStateColor(state)}
-        emissiveIntensity={state === 'energetic' ? 0.6 : 0.4}
+        roughness={0.15}
+        metalness={0.1}
         toneMapped={false}
       />
     </Sphere>
   )
 }
 
+// Forehead shine/highlight component
+function ForeheadShine({ size }: { size: 'full' | 'small' | 'medium' }) {
+  const scale = size === 'small' ? 0.5 : size === 'medium' ? 0.65 : 0.75
+  const zPos = size === 'small' ? 0.65 : size === 'medium' ? 0.8 : 0.9
+  const yPos = size === 'small' ? 0.35 : size === 'medium' ? 0.4 : 0.45
+
+  return (
+    <Billboard position={[-0.15 * scale, yPos, zPos]}>
+      <group scale={[scale, scale, scale]}>
+        {/* Main shine */}
+        <mesh>
+          <circleGeometry args={[0.12, 32]} />
+          <meshBasicMaterial color="#FFFFFF" transparent opacity={0.6} />
+        </mesh>
+        {/* Smaller secondary shine */}
+        <mesh position={[0.08, -0.06, 0.01]}>
+          <circleGeometry args={[0.05, 16]} />
+          <meshBasicMaterial color="#FFFFFF" transparent opacity={0.4} />
+        </mesh>
+      </group>
+    </Billboard>
+  )
+}
+
 // Animated eye component using Billboard to always face camera
-function Eye({ position, state, isBlinking }: { position: [number, number, number]; state: BubbleState; isBlinking: boolean }) {
+function Eye({ position, state, isBlinking, expressionMod }: { position: [number, number, number]; state: BubbleState; isBlinking: boolean; expressionMod?: ReturnType<typeof getExpressionModifiers> }) {
   const groupRef = useRef<THREE.Group>(null)
   const pupilRef = useRef<THREE.Group>(null)
   const expression = getEyeExpression(state)
   const animation = getStateAnimation(state)
+  const mod = expressionMod || getExpressionModifiers()
 
   useFrame(({ pointer }) => {
     if (pupilRef.current && groupRef.current) {
@@ -136,9 +175,12 @@ function Eye({ position, state, isBlinking }: { position: [number, number, numbe
       pupilRef.current.position.x = THREE.MathUtils.lerp(pupilRef.current.position.x, targetX, 0.1)
       pupilRef.current.position.y = THREE.MathUtils.lerp(pupilRef.current.position.y, targetY, 0.1)
 
-      // Eye squint based on state (blink animation)
-      const blinkScale = isBlinking ? 0.1 : animation.eyeOpenness
+      // Eye squint based on state (blink animation) + expression scale
+      const blinkScale = isBlinking ? 0.1 : animation.eyeOpenness * mod.eyeScale
       groupRef.current.scale.y = THREE.MathUtils.lerp(groupRef.current.scale.y, blinkScale, 0.3)
+
+      // Apply expression tilt
+      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, mod.eyeTilt, 0.1)
     }
   })
 
@@ -184,25 +226,42 @@ function getMouthShape(state: BubbleState) {
 }
 
 // Animated mouth component - uses simple shapes for cross-browser compatibility
-function Mouth({ state, size }: { state: BubbleState; size: 'full' | 'small' | 'medium' }) {
+function Mouth({ state, size, expressionMod }: { state: BubbleState; size: 'full' | 'small' | 'medium'; expressionMod?: ReturnType<typeof getExpressionModifiers> }) {
   const mouth = getMouthShape(state)
+  const mod = expressionMod || getExpressionModifiers()
 
-  const scale = size === 'small' ? 0.7 : size === 'medium' ? 1.0 : 1.2
-  const zPos = size === 'small' ? 0.85 : size === 'medium' ? 1.1 : 1.3
+  const scale = size === 'small' ? 0.5 : size === 'medium' ? 0.65 : 0.75
+  const zPos = size === 'small' ? 0.65 : size === 'medium' ? 0.8 : 0.9
+
+  // Use expression mouth type if provided, otherwise use state-based
+  const mouthType = mod.mouthType || mouth.type
 
   // Render different mouth shapes based on expression
   const renderMouth = () => {
-    switch (mouth.type) {
+    switch (mouthType) {
+      case 'big-smile':
+        // Extra big smile for celebratory
+        return (
+          <mesh rotation={[0, 0, Math.PI]}>
+            <ringGeometry args={[0.1, 0.15, 32, 1, 0, Math.PI]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
+        )
       case 'happy':
         // Big smile - half circle at bottom
         return (
-          <group>
-            {/* Smile arc using ring segment */}
-            <mesh rotation={[0, 0, Math.PI]}>
-              <ringGeometry args={[0.08, 0.12, 32, 1, 0, Math.PI]} />
-              <meshBasicMaterial color="#1E293B" />
-            </mesh>
-          </group>
+          <mesh rotation={[0, 0, Math.PI]}>
+            <ringGeometry args={[0.08, 0.12, 32, 1, 0, Math.PI]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
+        )
+      case 'gentle':
+        // Gentle supportive smile
+        return (
+          <mesh rotation={[0, 0, Math.PI]}>
+            <ringGeometry args={[0.04, 0.07, 32, 1, 0, Math.PI * 0.7]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
         )
       case 'smile':
         // Gentle smile - smaller arc
@@ -212,11 +271,27 @@ function Mouth({ state, size }: { state: BubbleState; size: 'full' | 'small' | '
             <meshBasicMaterial color="#1E293B" />
           </mesh>
         )
+      case 'o':
+        // Curious "o" mouth
+        return (
+          <mesh>
+            <ringGeometry args={[0.03, 0.06, 32]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
+        )
+      case 'worried':
+        // Concerned wavy mouth
+        return (
+          <mesh>
+            <planeGeometry args={[0.1, 0.03]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
+        )
       case 'neutral':
         // Straight line
         return (
           <mesh>
-            <planeGeometry args={[0.12, 0.025]} />
+            <planeGeometry args={[0.1, 0.02]} />
             <meshBasicMaterial color="#1E293B" />
           </mesh>
         )
@@ -236,6 +311,13 @@ function Mouth({ state, size }: { state: BubbleState; size: 'full' | 'small' | '
             <meshBasicMaterial color="#1E293B" />
           </mesh>
         )
+      default:
+        return (
+          <mesh>
+            <planeGeometry args={[0.1, 0.02]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
+        )
     }
   }
 
@@ -249,9 +331,10 @@ function Mouth({ state, size }: { state: BubbleState; size: 'full' | 'small' | '
 }
 
 // Eyes and mouth container with blinking
-function BubbleFace({ state, size }: { state: BubbleState; size: 'full' | 'small' | 'medium' }) {
+function BubbleFace({ state, size, expression: microExpression }: { state: BubbleState; size: 'full' | 'small' | 'medium'; expression?: BubbleExpression }) {
   const [isBlinking, setIsBlinking] = useState(false)
-  const expression = getEyeExpression(state)
+  const eyeExpression = getEyeExpression(state)
+  const expressionMod = getExpressionModifiers(microExpression)
 
   // Random blinking - more frequent gives more life
   useEffect(() => {
@@ -265,35 +348,36 @@ function BubbleFace({ state, size }: { state: BubbleState; size: 'full' | 'small
     return () => clearInterval(blinkInterval)
   }, [state])
 
-  // Scale and position based on bubble size
-  const eyeScale = size === 'small' ? 0.7 : size === 'medium' ? 1.0 : 1.2
-  // Eyes need to be in front of the distorted sphere (radius ~1 + distortion)
-  const eyeZ = size === 'small' ? 0.85 : size === 'medium' ? 1.1 : 1.3
+  // Smaller scale for compact bubble
+  const eyeScale = size === 'small' ? 0.5 : size === 'medium' ? 0.65 : 0.75
+  // Eyes need to be in front of the distorted sphere
+  const eyeZ = size === 'small' ? 0.65 : size === 'medium' ? 0.8 : 0.9
+  const eyeY = (eyeExpression.eyeY + expressionMod.browRaise) * 0.6
 
   return (
     <>
       {/* Eyes */}
-      <group scale={[eyeScale, eyeScale, eyeScale]} position={[0, expression.eyeY * 0.8, eyeZ]}>
+      <group scale={[eyeScale, eyeScale, eyeScale]} position={[0, eyeY, eyeZ]}>
         <Eye
-          position={[-expression.eyeSpacing * 1.2, 0, 0]}
+          position={[-eyeExpression.eyeSpacing * 1.2, 0, 0]}
           state={state}
           isBlinking={isBlinking}
+          expressionMod={expressionMod}
         />
         <Eye
-          position={[expression.eyeSpacing * 1.2, 0, 0]}
+          position={[eyeExpression.eyeSpacing * 1.2, 0, 0]}
           state={state}
           isBlinking={isBlinking}
+          expressionMod={expressionMod}
         />
       </group>
 
       {/* Mouth */}
-      <Mouth state={state} size={size} />
+      <Mouth state={state} size={size} expressionMod={expressionMod} />
     </>
   )
 }
 
-// Legacy alias for backwards compatibility
-const BubbleEyes = BubbleFace
 
 // Floating particles with state-aware behavior
 function FloatingParticles({ count = 60, state }: { count?: number; state: BubbleState }) {
@@ -365,6 +449,7 @@ function TransparentBackground() {
 interface BalanceBubbleProps {
   state?: BubbleState
   size?: 'full' | 'small' | 'medium'
+  expression?: BubbleExpression
   showParticles?: boolean
   showEyes?: boolean
   className?: string
@@ -374,12 +459,14 @@ interface BalanceBubbleProps {
 export function BalanceBubble({
   state = 'content',
   size = 'full',
+  expression,
   showParticles = true,
   showEyes = true,
   className = '',
   onClick,
 }: BalanceBubbleProps) {
-  const cameraPos = size === 'small' ? [0, 0, 3] : size === 'medium' ? [0, 0, 3.5] : [0, 0, 3.2]
+  // Closer camera for smaller bubble
+  const cameraPos = size === 'small' ? [0, 0, 2.5] : size === 'medium' ? [0, 0, 2.8] : [0, 0, 2.6]
 
   return (
     <div className={`w-full h-full ${className}`} style={{ background: 'transparent' }}>
@@ -413,8 +500,11 @@ export function BalanceBubble({
         {/* Main bubble */}
         <Bubble state={state} size={size} onClick={onClick} />
 
-        {/* Eyes - gives the bubble personality */}
-        {showEyes && <BubbleEyes state={state} size={size} />}
+        {/* Forehead shine/highlight */}
+        <ForeheadShine size={size} />
+
+        {/* Face - gives the bubble personality */}
+        {showEyes && <BubbleFace state={state} size={size} expression={expression} />}
 
         {/* Particles */}
         {showParticles && (size === 'full' || size === 'medium') && <FloatingParticles state={state} count={size === 'medium' ? 30 : 60} />}

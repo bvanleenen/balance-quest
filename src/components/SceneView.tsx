@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Clock, MapPin, Zap } from 'lucide-react'
-import type { Scene, Choice, BubbleState } from '../gameState'
+import type { Scene, Choice, BubbleState, BubbleExpression } from '../gameState'
 import { BubbleHabitat } from './BubbleHabitat'
 import { ProgressBar } from './BQFeatures'
 import { TimedBubbleAlert } from './TimedBubbleAlert'
@@ -28,6 +28,13 @@ export function SceneView({ scene, playerName, bubbleState, points, earnedBadges
   const [phase, setPhase] = useState<'intro' | 'text' | 'choices'>('intro')
   const [visibleLines, setVisibleLines] = useState(0)
   const [hoveredChoice, setHoveredChoice] = useState<string | null>(null)
+
+  // Bubble expression based on scene phase
+  const getBubbleExpression = (): BubbleExpression | undefined => {
+    if (phase === 'choices') return 'curious' // Looking at user making a choice
+    if (phase === 'intro') return 'supportive'
+    return undefined
+  }
 
   // Split text into lines for animation
   const textLines = scene.text.split('\n').filter(line => line.trim())
@@ -103,6 +110,7 @@ export function SceneView({ scene, playerName, bubbleState, points, earnedBadges
             bubbleState={bubbleState}
             points={points}
             earnedBadges={earnedBadges}
+            expression={getBubbleExpression()}
             onBubbleClick={onBubbleClick}
           />
         </div>

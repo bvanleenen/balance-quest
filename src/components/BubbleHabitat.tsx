@@ -1,91 +1,99 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Sparkles } from 'lucide-react'
+import { Star, Target, Coffee, Moon, Users, Sunrise, Clock, MessageCircle, Shield, Heart, Activity } from 'lucide-react'
 import { BalanceBubble } from './BalanceBubble'
-import type { BubbleState } from '../gameState'
+import type { BubbleState, BubbleExpression } from '../gameState'
 import { BADGES } from '../gameState'
+
+// Map badge icon names to actual components
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number }>> = {
+  Target,
+  Coffee,
+  Moon,
+  Users,
+  Sunrise,
+  Clock,
+  MessageCircle,
+  Shield,
+  Heart,
+  Activity,
+}
 
 interface BubbleHabitatProps {
   bubbleState: BubbleState
   points: number
   earnedBadges: string[]
+  expression?: BubbleExpression
   onBubbleClick?: () => void
 }
 
-export function BubbleHabitat({ bubbleState, points, earnedBadges, onBubbleClick }: BubbleHabitatProps) {
-  // Get badge info for earned badges (max 4 shown)
-  const displayBadges = earnedBadges.slice(-4).map(id => BADGES[id as keyof typeof BADGES]).filter(Boolean)
+export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, onBubbleClick }: BubbleHabitatProps) {
+  // Get badge info for earned badges (max 5 shown)
+  const displayBadges = earnedBadges.slice(-5).map(id => BADGES[id as keyof typeof BADGES]).filter(Boolean)
+
+  // Get the actual icon component
+  const getIconComponent = (iconName: string) => {
+    const Icon = ICON_MAP[iconName]
+    return Icon ? <Icon size={14} /> : null
+  }
 
   return (
-    <div className="bubble-habitat">
-      {/* Decorative corner sparkles */}
-      <div className="habitat-sparkle habitat-sparkle-tl">
-        <Sparkles size={12} />
-      </div>
-      <div className="habitat-sparkle habitat-sparkle-tr">
-        <Sparkles size={12} />
-      </div>
-
-      {/* Header bar with points and badges */}
-      <div className="habitat-header">
-        {/* Points display - left side */}
-        <motion.div
-          className="habitat-points"
-          whileHover={{ scale: 1.05 }}
-        >
-          <Star size={16} fill="currentColor" />
-          <motion.span
-            key={points}
-            initial={{ scale: 1.3, color: '#34D399' }}
-            animate={{ scale: 1, color: '#fff' }}
-            transition={{ duration: 0.3, type: 'spring' }}
-            className="habitat-points-value"
+    <div className="bubble-habitat-wrapper">
+      <div className="bubble-habitat">
+        {/* Header bar with points only */}
+        <div className="habitat-header">
+          {/* Points display - centered */}
+          <motion.div
+            className="habitat-points"
+            whileHover={{ scale: 1.05 }}
           >
-            {points}
-          </motion.span>
-          <span className="habitat-points-label">punten</span>
-        </motion.div>
+            <Star size={14} fill="currentColor" />
+            <motion.span
+              key={points}
+              initial={{ scale: 1.3, color: '#34D399' }}
+              animate={{ scale: 1, color: '#fff' }}
+              transition={{ duration: 0.3, type: 'spring' }}
+              className="habitat-points-value"
+            >
+              {points}
+            </motion.span>
+            <span className="habitat-points-label">punten</span>
+          </motion.div>
+        </div>
 
-        {/* Badges display - right side */}
-        <div className="habitat-badges">
-          <AnimatePresence>
-            {displayBadges.map((badge, index) => (
-              <motion.div
-                key={badge.name}
-                className="habitat-badge"
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{
-                  delay: index * 0.1,
-                  type: 'spring',
-                  stiffness: 400,
-                  damping: 15
-                }}
-                whileHover={{ scale: 1.2, rotate: 10 }}
-                title={badge.name}
-              >
-                {badge.icon}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          {earnedBadges.length === 0 && (
-            <span className="habitat-badges-empty">Nog geen badges</span>
-          )}
+        {/* Bubble container - compact */}
+        <div className="habitat-bubble-area" onClick={onBubbleClick}>
+          <BalanceBubble
+            state={bubbleState}
+            size="full"
+            expression={expression}
+            showParticles={false}
+            showEyes={true}
+          />
         </div>
       </div>
 
-      {/* Bubble container */}
-      <div className="habitat-bubble-area" onClick={onBubbleClick}>
-        <BalanceBubble
-          state={bubbleState}
-          size="full"
-          showParticles={false}
-          showEyes={true}
-        />
-      </div>
-
-      {/* Bottom decorative line */}
-      <div className="habitat-footer">
-        <div className="habitat-footer-line" />
+      {/* Badges display - below habitat */}
+      <div className="habitat-badges-row">
+        <AnimatePresence>
+          {displayBadges.map((badge, index) => (
+            <motion.div
+              key={badge.name}
+              className="habitat-badge-pill"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                delay: index * 0.08,
+                type: 'spring',
+                stiffness: 400,
+                damping: 20
+              }}
+              title={badge.name}
+            >
+              <span className="badge-icon">{getIconComponent(badge.icon)}</span>
+              <span className="badge-name">{badge.name}</span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   )
