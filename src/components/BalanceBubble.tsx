@@ -364,8 +364,8 @@ function BubbleFace({ state, size, expression: microExpression }: { state: Bubbl
         />
       </group>
 
-      {/* Mouth */}
-      <Mouth state={state} size={size} expressionMod={expressionMod} />
+      {/* Mouth - temporarily disabled for debugging */}
+      {/* <Mouth state={state} size={size} expressionMod={expressionMod} /> */}
     </>
   )
 }
