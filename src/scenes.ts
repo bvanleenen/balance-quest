@@ -1,558 +1,1026 @@
 import type { Scene } from './gameState'
 
 export const SCENES: Scene[] = [
-  // Scene 1: Net Thuis
+  // ============================================
+  // DAG 1: Donderdag
+  // ============================================
+
+  // Scene 1.1: Net Thuis (KERN)
   {
     id: 'net-thuis',
+    day: 1,
+    isCore: true,
     time: '16:30',
     location: 'Thuis',
     intro: '',
-    text: 'Het is half vijf. Je komt net thuis na een lange dag op school.\n\nJe rugtas ploft op de grond. Je bent moe. Er is nog huiswerk voor morgen, maar je hoofd staat er even niet naar.\n\nWat ga je doen?',
+    text: 'Het is half vijf. Je komt net thuis na een lange dag op school.\n\nJe moeder vraagt of je mee-eet om 18:00. Je hebt een wiskundetoets morgen waarvoor je nog moet leren.\n\nNet op dat moment appt je beste vriend: "Heb je even? Slecht nieuws, moet je iets vertellen."',
     relevantHabits: ['finish-tasks', 'me-time', 'less-phone'],
     choices: [
       {
-        id: 'a',
-        label: 'Direct aan huiswerk',
-        subtext: 'Beter nu dan straks. Dan heb ik het maar gehad.',
+        id: 'vriend-bellen',
+        label: 'Vriend bellen',
+        subtext: 'Hij klinkt serieus. School kan wachten.',
+        category: 'social',
+        points: 5,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'eerst-leren',
+        label: 'Eerst 30 min leren, dan bellen',
+        subtext: 'Ik stuur dat ik over een half uur bel. Dan heb ik iets gedaan.',
         category: 'work',
         points: 10,
         bubbleEffect: 1,
       },
       {
-        id: 'b',
-        label: 'Even scrollen',
-        subtext: 'Eerst even ontspannen. 10 minuutjes maar.',
-        category: 'scroll',
-        points: 0,
-        bubbleEffect: -1,
-      },
-      {
-        id: 'c',
-        label: 'Chillen en iets eten',
-        subtext: 'Ik pak eerst wat te eten en rust even uit.',
-        category: 'rest',
-        points: 5,
-        bubbleEffect: 1,
+        id: 'leren-tot-eten',
+        label: 'Leren tot het eten, daarna bellen',
+        subtext: 'Als ik nu begin, kan ik na het eten bellen met een rustig hoofd.',
+        category: 'work',
+        points: 10,
+        bubbleEffect: 0,
       },
     ],
     bqResponses: {
-      a: {
-        message: 'Goed dat je begint, {name}! Maar vergeet niet af en toe even te pauzeren.',
+      'vriend-bellen': {
+        message: 'Je kiest voor je vriend, {name}. Hoe voelt dat?',
+        quote: 'Je hebt nog niet geleerd voor morgen.',
         habitMessage: {
-          'finish-tasks': 'Yes! Je wilde taken afmaken - dit is een goede eerste stap!',
+          'finish-tasks': 'Je wilde taken afmaken... De toets is morgen.',
         },
       },
-      b: {
-        message: 'Even rust pakken is prima, {name}. Let wel op de tijd!',
+      'eerst-leren': {
+        message: 'Je probeert beide te doen. Een half uur is een half uur.',
+        quote: 'Je vriend wacht op je.',
         habitMessage: {
-          'less-phone': 'Je wilde minder op je telefoon... Let op dat 10 minuten niet 1 uur wordt!',
+          'finish-tasks': 'Slim - eerst iets doen, dan sociaal.',
         },
       },
-      c: {
-        message: 'Goed idee om eerst even op te laden. Eten en rust zijn belangrijk!',
-        quote: 'Ook rust is productief.',
+      'leren-tot-eten': {
+        message: 'Je kiest voor structuur. De toets is belangrijk voor je.',
+        quote: 'Je vriend moet langer wachten met zijn slechte nieuws.',
         habitMessage: {
-          'me-time': 'Tijd voor jezelf nemen - precies wat je wilde! Goed bezig.',
+          'finish-tasks': 'Goede prioritering voor je doel!',
         },
       },
     },
   },
 
-  // Scene 2: De Scroll-val
+  // Scene 1.2: De Scroll-val
   {
     id: 'scroll-val',
-    intro: 'Je opende TikTok. "Even 10 minuutjes maar..."',
-    text: '...een uur later.\n\nJe schrikt als je op de tijd kijkt. Waar is de tijd gebleven?',
+    day: 1,
+    isCore: false,
+    intro: 'Later die avond. Je opent Instagram om te checken of je crush je story heeft gezien.',
+    text: '45 minuten later.\n\nJe hebt 200 reels gekeken. Je weet nog steeds niet of die ene persoon keek. Je scrollde er gewoon langs.\n\nHoe voel je je?',
     relevantHabits: ['less-phone'],
     choices: [
       {
-        id: 'prima',
-        label: 'Prima',
-        subtext: 'Ik geniet ervan, is toch mijn vrije tijd?',
+        id: 'oke',
+        label: '😊 Best oké eigenlijk',
+        subtext: 'Ik zag een paar grappige dingen. Was wel ontspannend.',
         category: 'neutral',
         points: 0,
         bubbleEffect: 0,
       },
       {
-        id: 'mwah',
-        label: 'Mwah...',
-        subtext: 'Eigenlijk moet ik wat anders doen...',
+        id: 'gemengd',
+        label: '🤔 Gemengd',
+        subtext: 'Sommige content was leuk, maar ik zocht eigenlijk iets anders.',
         category: 'rest',
         points: 5,
         bubbleEffect: 0,
       },
       {
-        id: 'schuldig',
-        label: 'Schuldig',
-        subtext: 'Ugh, weer een uur verspild.',
+        id: 'leeg',
+        label: '😔 Een beetje leeg',
+        subtext: 'Ik weet niet eens meer wat ik zag. De tijd is gewoon... weg.',
         category: 'rest',
         points: 5,
         bubbleEffect: 0,
       },
     ],
     bqResponses: {
-      prima: {
-        message: 'Zolang het een bewuste keuze is, is het oké. Geniet ervan!',
+      'oke': {
+        message: 'Soms is scrollen gewoon ontspanning. Niks mis mee.',
+        quote: 'Hoe vaak voel je dit zo na het scrollen?',
         habitMessage: {
           'less-phone': 'Je wilde minder op je telefoon... Was dit een bewuste keuze?',
         },
       },
-      mwah: {
-        message: 'Wat als je nu stopt en iets anders gaat doen?',
-        quote: 'Kleine stappen brengen je verder dan je denkt.',
-        bubbleChange: 'orange',
+      'gemengd': {
+        message: 'Je zocht iets specifieks en vond iets anders. Herkenbaar.',
+        quote: 'Wat zou je nu eigenlijk willen doen?',
         habitMessage: {
-          'less-phone': 'Dit is precies waar je aan wilde werken. Nu stoppen is al winst!',
+          'less-phone': 'Dit is precies waar je aan wilde werken. Bewustzijn is stap 1!',
         },
       },
-      schuldig: {
-        message: 'Herkenbaar. Maar schuld helpt je niet verder. De volgende keuze is een nieuwe kans.',
-        quote: 'Niet perfect, wel vooruit.',
-        bubbleChange: 'orange',
+      'leeg': {
+        message: 'Dat lege gevoel kennen veel mensen. Je bent niet de enige.',
+        quote: 'De tijd terugdraaien kan niet. Maar de volgende 45 minuten zijn van jou.',
         habitMessage: {
-          'less-phone': 'Je bent je er bewust van - dat is stap 1. Volgende keer lukt het beter.',
+          'less-phone': 'Je bent je er bewust van - dat is al winst.',
         },
       },
     },
   },
 
-  // Scene 3: Huiswerk Stress
+  // Scene 1.B: De Training (Alternatief voor beweging)
   {
-    id: 'huiswerk-stress',
+    id: 'de-training',
+    day: 1,
+    isCore: false,
+    time: '17:30',
+    location: 'Sportschool / Sportveld',
     intro: '',
-    text: 'Je hebt een opdracht die morgen af moet.\n\nJe hebt er nog niet aan begonnen. De deadline voelt als een gewicht op je schouders.\n\nWat doe je?',
-    relevantHabits: ['finish-tasks', 'take-breaks'],
+    text: 'Het is half zes. Je zou eigenlijk naar training gaan.\n\nJe bent moe van school. Het weer is oké, niet geweldig. Je lichaam voelt zwaar.\n\nJe coach appt: "Tot zo!" met een spierballen-emoji.',
+    relevantHabits: ['more-exercise'],
     choices: [
       {
-        id: 'a',
-        label: 'Nu beginnen',
-        subtext: 'Ik begin nu, ook al heb ik geen zin.',
-        category: 'work',
-        points: 15,
+        id: 'gaan',
+        label: 'Gaan, ook al heb je geen zin',
+        subtext: 'Ik weet dat ik me beter voel NA de training. Ik ga.',
+        category: 'rest',
+        points: 10,
         bubbleEffect: 2,
       },
       {
-        id: 'b',
-        label: 'Morgen vroeg',
-        subtext: 'Ik doe het morgen vroeg wel. Nu kan ik me toch niet concentreren.',
-        category: 'neutral',
-        points: 0,
-        bubbleEffect: -1,
-      },
-      {
-        id: 'c',
-        label: 'Eerst inschatten',
-        subtext: 'Ik kijk eerst even hoe lang het duurt. Dan plan ik het in.',
-        category: 'work',
-        points: 10,
-        bubbleEffect: 1,
-      },
-    ],
-    bqResponses: {
-      a: {
-        message: 'Goed bezig, {name}! Beginnen is vaak het moeilijkste.',
-        quote: 'Een taak afronden is ook progressie.',
-        habitMessage: {
-          'finish-tasks': 'Dit is precies je doel: taken afmaken. Trots op je!',
-        },
-      },
-      b: {
-        message: 'Uitstellen voelt nu goed, maar hoe voel je je morgenochtend?\n\nSoms is "ik doe het morgen" een belofte die we niet nakomen.',
-        bubbleChange: 'orange',
-        habitMessage: {
-          'finish-tasks': 'Je wilde taken afmaken... Weet je zeker dat morgen beter uitkomt?',
-        },
-      },
-      c: {
-        message: 'Slim! Weten wat je te wachten staat helpt om te plannen.',
-        habitMessage: {
-          'finish-tasks': 'Goede aanpak! Inschatten helpt je om de taak echt af te maken.',
-        },
-      },
-    },
-  },
-
-  // Scene 4: De Pauze
-  {
-    id: 'de-pauze',
-    intro: 'Je bent al 2 uur aan het werk.',
-    text: 'Je ogen zijn moe. Je rug doet pijn van het zitten. Je concentratie begint af te nemen.',
-    relevantHabits: ['take-breaks', 'more-exercise'],
-    choices: [
-      {
-        id: 'a',
-        label: 'Ja, goed idee',
-        subtext: 'Je hebt gelijk. Even pauzeren.',
+        id: 'afmelden',
+        label: 'Afmelden - te moe',
+        subtext: 'Ik luister naar mijn lichaam. Vandaag even niet.',
         category: 'rest',
-        points: 10,
-        bubbleEffect: 1,
+        points: 5,
+        bubbleEffect: 0,
       },
       {
-        id: 'b',
-        label: 'Nog even doorgaan',
-        subtext: 'Ik ben bijna klaar. Nog even doorzetten.',
-        category: 'work',
-        points: 0,
-        bubbleEffect: -1,
+        id: 'zelf-trainen',
+        label: 'Later zelf trainen',
+        subtext: 'Ik ga niet naar de groep, maar doe straks wel een rondje hardlopen.',
+        category: 'rest',
+        points: 5,
+        bubbleEffect: 1,
       },
     ],
     bqResponses: {
-      a: {
-        message: 'Geniet van je pauze. Je hersenen hebben het nodig!',
-        quote: 'Ook rust is productief.',
-        badge: 'pauze-pro',
+      'gaan': {
+        message: 'Je kiest voor beweging ondanks weerstand. Dat is discipline.',
+        quote: 'Hoe voelde je je na de laatste training?',
         habitMessage: {
-          'take-breaks': 'Perfect! Dit is precies wat je wilde: genoeg pauzes nemen.',
-          'more-exercise': 'Tip: loop even een rondje tijdens je pauze!',
+          'more-exercise': 'Dit is precies je doel - meer bewegen. Goed bezig!',
         },
       },
-      b: {
-        message: 'Oké, maar luister naar je lichaam. Pauzes zijn geen tijdverspilling.',
-        bubbleChange: 'orange',
+      'afmelden': {
+        message: 'Je kiest voor rust. Soms is dat wat je lichaam nodig heeft.',
+        quote: 'Wanneer was de laatste keer dat je wél ging terwijl je geen zin had?',
         habitMessage: {
-          'take-breaks': 'Je wilde meer pauzes nemen... Je lichaam geeft signalen af.',
-          'more-exercise': 'Even bewegen zou je juist helpen om beter te focussen.',
+          'more-exercise': 'Rust is ook belangrijk. Maar wordt dit een patroon?',
+        },
+      },
+      'zelf-trainen': {
+        message: 'Je zoekt een tussenweg. Zelf trainen vraagt meer zelfdiscipline.',
+        quote: 'Lukt het je meestal om dat ook echt te doen?',
+        habitMessage: {
+          'more-exercise': 'Goed alternatief! Doe je het ook echt straks?',
         },
       },
     },
   },
 
-  // Scene 5: Sociale Druk
+  // Scene 1.3: Huiswerk Stress
   {
-    id: 'sociale-druk',
-    intro: 'Ping!',
-    text: 'De groepsapp gaat. Je vrienden sturen:\n\n"Kom je vanavond? We gaan chillen bij Sanne!"\n\nJe hebt eigenlijk nog huiswerk...',
-    relevantHabits: ['finish-tasks', 'me-time'],
+    id: 'huiswerk-stress',
+    day: 1,
+    isCore: false,
+    intro: 'Het is na het eten.',
+    text: 'Nu zit je voor je boeken. De wiskundetoets is morgen.\n\nJe bent moe. De stof wil niet landen. Je hoofd zit vol.\n\nWat doe je?',
+    relevantHabits: ['finish-tasks', 'take-breaks', 'sleep-on-time'],
     choices: [
       {
-        id: 'a',
-        label: 'Ja, ik kom!',
-        subtext: 'Huiswerk doe ik later wel. YOLO!',
-        category: 'social',
-        points: 5,
-        bubbleEffect: 0,
-      },
-      {
-        id: 'b',
-        label: 'Nee, ik moet werken',
-        subtext: 'Sorry, ik heb nog te veel te doen.',
+        id: 'doordrukken',
+        label: 'Doordrukken',
+        subtext: 'Ik zet een timer en werk door, ook al wordt het niet mijn beste sessie.',
         category: 'work',
+        points: 10,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'morgenochtend',
+        label: 'Morgenochtend vroeg',
+        subtext: 'Als ik nu forceer, blijft het niet hangen. Ik zet mijn wekker vroeger.',
+        category: 'rest',
         points: 5,
         bubbleEffect: 0,
       },
       {
-        id: 'c',
-        label: 'Misschien even',
-        subtext: 'Ik kom misschien even, maar niet te lang.',
-        category: 'social',
+        id: 'nog-30-min',
+        label: 'Nog 30 minuten proberen',
+        subtext: 'Ik geef het nog een half uur. Als het dan niet lukt, ga ik slapen.',
+        category: 'work',
         points: 10,
         bubbleEffect: 1,
       },
     ],
     bqResponses: {
-      a: {
-        message: 'Vrienden zijn belangrijk!\n\nMaar... hoe voel je je straks als je huiswerk nog moet?',
+      'doordrukken': {
+        message: 'Je kiest voor doorzetten. Soms is "iets" beter dan "niks".',
+        quote: 'Hoe laat denk je klaar te zijn?',
         habitMessage: {
-          'finish-tasks': 'Je wilde taken afmaken... Lukt dat nog vanavond?',
+          'finish-tasks': 'Doorzetten past bij je doel!',
+          'sleep-on-time': 'Let op je bedtijd...',
         },
       },
-      b: {
-        message: 'Goed dat je je prioriteiten kent, {name}.\n\nMaar vergeet niet: sociale connectie is ook balans.',
+      'morgenochtend': {
+        message: 'Je vertrouwt op je ochtend-zelf. Dat vraagt discipline morgen.',
+        quote: 'Lukt het je meestal om vroeg op te staan als je dat plant?',
         habitMessage: {
-          'me-time': 'Soms is thuisblijven ook "tijd voor jezelf". Goed dat je kiest.',
+          'sleep-on-time': 'Slim - nu slapen, morgen fris.',
         },
       },
-      c: {
-        message: 'Balans! Een beetje van allebei. Slim om grenzen te stellen.',
-        quote: 'Balans ziet er voor iedereen anders uit.',
-        badge: 'sociale-balancer',
+      'nog-30-min': {
+        message: 'Een tijdslimiet stellen. Slimme manier om jezelf niet uit te putten.',
         habitMessage: {
-          'me-time': 'Grenzen stellen is ook zelfzorg. Goed bezig!',
-          'finish-tasks': 'Slim: even sociaal én nog tijd om te werken.',
+          'take-breaks': 'Goed! Een grens stellen is ook zelfzorg.',
         },
       },
     },
   },
 
-  // Scene 6: Bedtijd Scrollen
+  // Scene 1.4: Bedtijd
   {
-    id: 'bedtijd-scrollen',
-    time: '23:30',
+    id: 'bedtijd',
+    day: 1,
+    isCore: false,
+    time: '23:15',
     location: 'Bed',
     intro: '',
-    text: 'Het is half twaalf. Je ligt in bed met je telefoon.\n\nMorgen moet je vroeg op voor school. Je ogen zijn moe, maar je blijft scrollen.',
+    text: 'Je ligt in bed. Morgen is de toets.\n\nJe opent TikTok. Je ziet een video over iets waar je al weken over nadenkt. De comments zijn interessant.',
     relevantHabits: ['sleep-on-time', 'less-phone'],
     choices: [
       {
-        id: 'a',
-        label: 'Telefoon weg, slapen',
-        subtext: 'Je hebt gelijk. Welterusten telefoon.',
-        category: 'rest',
-        points: 15,
-        bubbleEffect: 2,
-      },
-      {
-        id: 'b',
-        label: 'Nog 10 minuten...',
-        subtext: 'Nog even dit filmpje...',
+        id: 'rabbit-hole',
+        label: 'Deze rabbit hole volgen',
+        subtext: 'Dit is interessant. Ik kijk waar dit heengaat.',
         category: 'scroll',
         points: 0,
         bubbleEffect: -2,
       },
       {
-        id: 'c',
-        label: 'Ik kan niet slapen zonder scrollen',
-        subtext: 'Als ik stop, lig ik alleen maar te denken.',
-        category: 'neutral',
-        points: 0,
+        id: 'opslaan',
+        label: 'Video opslaan, telefoon weg',
+        subtext: 'Ik sla hem op voor later. Nu slapen.',
+        category: 'rest',
+        points: 15,
+        bubbleEffect: 2,
+      },
+      {
+        id: 'timer-15',
+        label: 'Nog 15 minuten, dan echt stoppen',
+        subtext: 'Ik zet een timer. Om 23:30 gaat de telefoon weg.',
+        category: 'scroll',
+        points: 5,
         bubbleEffect: -1,
       },
     ],
     bqResponses: {
-      a: {
-        message: 'Goede keuze, {name}! Slaap lekker.\n\nMorgen ben je je toekomstige zelf dankbaar.',
-        badge: 'nachtrust-held',
-        habitMessage: {
-          'sleep-on-time': 'Yes! Op tijd naar bed - precies je doel. Slaap lekker!',
-          'less-phone': 'Telefoon weg voor het slapen - dubbele winst!',
-        },
-      },
-      b: {
-        message: 'We kennen die "10 minuten" allemaal...',
-        bubbleChange: 'orange',
+      'rabbit-hole': {
+        message: 'Nieuwsgierigheid is menselijk. Rabbit holes kunnen fascinerend zijn.',
+        quote: 'Het is nu 23:15. Hoe laat denk je te stoppen?',
         habitMessage: {
           'sleep-on-time': 'Je wilde op tijd naar bed... Het is al laat.',
-          'less-phone': 'Je wilde minder op je telefoon. Dit is een lastig moment.',
+          'less-phone': 'Dit is een lastig moment voor je doel.',
         },
       },
-      c: {
-        message: 'Herkenbaar. Misschien helpt een podcast of muziek?\n\nScrollen activeert je brein. Audio kan rustgevender zijn.',
+      'opslaan': {
+        message: 'Je stelt uit zonder te verliezen. Morgen is er ook nog.',
+        badge: 'uitgestelde-bevrediging',
         habitMessage: {
-          'sleep-on-time': 'Tip: probeer een slaap-podcast. Beter voor je nachtrust.',
-          'less-phone': 'Audio is een goed alternatief - scherm uit, ontspanning aan.',
+          'sleep-on-time': 'Perfect! Nu slapen, morgen uitgerust.',
+          'less-phone': 'Telefoon weg - precies wat je wilde!',
+        },
+      },
+      'timer-15': {
+        message: 'Een timer. Concrete afspraak met jezelf.',
+        quote: 'Lukt het je meestal om te stoppen als de timer gaat?',
+        habitMessage: {
+          'sleep-on-time': 'Beter dan niks, maar het wordt wel 23:30+...',
         },
       },
     },
   },
 
-  // Scene 7: De Ochtend
+  // Scene 1.5: De Ochtend (KERN)
   {
     id: 'de-ochtend',
+    day: 1,
+    isCore: true,
     time: '07:00',
     location: 'Slaapkamer',
     intro: 'Je wekker gaat.',
-    text: 'Hoe begin je de dag?',
+    text: 'Vandaag is de toets.\n\nJe pakt je telefoon om de wekker uit te zetten. Je ziet een bericht van je vriend: "Thanks voor gister. Je bent een topper. ❤️"\n\nEn een bericht in de groepsapp: "Wie heeft de samenvatting van wiskunde?"',
+    relevantHabits: ['less-phone', 'sleep-on-time', 'finish-tasks'],
+    choices: [
+      {
+        id: 'delen-groep',
+        label: 'Samenvatting delen',
+        subtext: 'Ik heb er gister aan gewerkt. Ik deel hem met de groep.',
+        category: 'social',
+        points: 5,
+        bubbleEffect: 1,
+      },
+      {
+        id: 'delen-vriend',
+        label: 'Alleen aan vriend sturen',
+        subtext: 'Ik stuur hem privé naar mijn vriend. Hij had het zwaar gister.',
+        category: 'social',
+        points: 5,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'niet-delen',
+        label: 'Niet delen',
+        subtext: 'Ik heb er zelf voor gewerkt. Ze hadden eerder moeten beginnen.',
+        category: 'neutral',
+        points: 0,
+        bubbleEffect: 0,
+      },
+    ],
+    bqResponses: {
+      'delen-groep': {
+        message: 'Je deelt je werk, {name}. Dat is genereus.',
+        quote: 'Sommigen hebben gister ook geleerd. Anderen niet.',
+      },
+      'delen-vriend': {
+        message: 'Je helpt je vriend. Selectief delen is ook een keuze.',
+        quote: 'De rest van de groep heeft geen samenvatting.',
+      },
+      'niet-delen': {
+        message: 'Je beschermt je eigen werk. Je hebt er tijd in gestoken.',
+        quote: 'Hoe denk je dat de groep reageert?',
+      },
+    },
+  },
+
+  // ============================================
+  // DAG 2: Vrijdag
+  // ============================================
+
+  // Scene 2.1: Na de Toets
+  {
+    id: 'na-de-toets',
+    day: 2,
+    isCore: false,
+    time: '11:30',
+    location: 'School',
+    intro: 'De toets is klaar.',
+    text: 'In de pauze bespreekt iedereen de antwoorden.\n\n"Wat had jij bij vraag 5?" vraagt iemand. Je weet dat jouw antwoord anders was dan wat de meesten zeggen.',
+    relevantHabits: ['finish-tasks'],
+    choices: [
+      {
+        id: 'antwoord-delen',
+        label: 'Antwoord delen',
+        subtext: 'Ik had [X], maar ik weet niet zeker of het klopt.',
+        category: 'social',
+        points: 5,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'niet-meedoen',
+        label: 'Niet meedoen aan de discussie',
+        subtext: 'Ik wil het niet weten. Wat gedaan is, is gedaan.',
+        category: 'rest',
+        points: 10,
+        bubbleEffect: 1,
+      },
+      {
+        id: 'luisteren',
+        label: 'Luisteren maar niks zeggen',
+        subtext: 'Ik luister wel, maar ik deel mijn antwoorden niet.',
+        category: 'neutral',
+        points: 5,
+        bubbleEffect: 0,
+      },
+    ],
+    bqResponses: {
+      'antwoord-delen': {
+        message: 'Je bent open over je onzekerheid. Dat is kwetsbaar.',
+        quote: 'De groep kijkt je aan. Sommigen hadden hetzelfde.',
+      },
+      'niet-meedoen': {
+        message: 'Je beschermt je rust. De uitslag verandert niet door erover te praten.',
+        habitMessage: {
+          'take-breaks': 'Goed voor je hoofd - even loslaten.',
+        },
+      },
+      'luisteren': {
+        message: 'Je verzamelt informatie zonder jezelf bloot te geven.',
+        quote: 'Is dat strategie of onzekerheid?',
+      },
+    },
+  },
+
+  // Scene 2.2: Lunch Drama (KERN)
+  {
+    id: 'lunch-drama',
+    day: 2,
+    isCore: true,
+    time: '12:45',
+    location: 'Schoolplein',
+    intro: '',
+    text: 'Je zit met je groep. Iemand laat een screenshot zien van een andere groepsapp.\n\nEr wordt gepraat over Lisa - diezelfde Lisa die het moeilijk heeft thuis. Iemand noemt haar "zielig" en "attentie-zoeker".\n\nDe screenshot gaat rond. Iedereen lacht een beetje ongemakkelijk.',
+    relevantHabits: ['me-time'],
+    choices: [
+      {
+        id: 'niks-zeggen',
+        label: 'Niks zeggen',
+        subtext: 'Ik bemoei me er niet mee. Het gaat vanzelf over.',
+        category: 'neutral',
+        points: 0,
+        bubbleEffect: -1,
+      },
+      {
+        id: 'uitspreken',
+        label: 'Zeggen dat het niet oké is',
+        subtext: 'Ik zeg: "Guys, dit is niet cool. Ze heeft het al moeilijk."',
+        category: 'social',
+        points: 15,
+        bubbleEffect: 2,
+      },
+      {
+        id: 'later-prive',
+        label: 'Later privé tegen iemand zeggen',
+        subtext: 'Ik zeg nu niks, maar ik app straks iemand dat ik het niet oké vond.',
+        category: 'social',
+        points: 5,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'weglopen',
+        label: 'Weglopen',
+        subtext: 'Ik sta op en loop weg. Ik hoef hier niet bij te zijn.',
+        category: 'rest',
+        points: 10,
+        bubbleEffect: 1,
+      },
+    ],
+    bqResponses: {
+      'niks-zeggen': {
+        message: 'Je kiest voor niet-ingrijpen. Soms is dat makkelijker.',
+        quote: 'Het gesprek gaat door. Lisa hoort het misschien nooit. Misschien wel.',
+      },
+      'uitspreken': {
+        message: 'Je spreekt je uit. Dat vraagt moed.',
+        quote: 'De groep wordt stil. Sommigen kijken geïrriteerd. Eén iemand knikt.',
+        badge: 'stem-gebruiken',
+      },
+      'later-prive': {
+        message: 'Je kiest voor een veiligere route. Dat is ook iets.',
+        quote: 'Maar verandert een privé-berichtje iets aan de groepsdynamiek?',
+      },
+      'weglopen': {
+        message: 'Je trekt een grens. Je hoeft niet overal bij te zijn.',
+        quote: 'De groep merkt het. Sommigen vragen later wat er was.',
+      },
+    },
+  },
+
+  // Scene 2.3: Vrijdagmiddag Keuze (KERN)
+  {
+    id: 'vrijdagmiddag',
+    day: 2,
+    isCore: true,
+    time: '15:30',
+    location: 'Thuis',
+    intro: 'Het is vrijdagmiddag. Het weekend begint.',
+    text: 'Je hebt drie opties:\n\n1. Je ouders willen dit weekend het huis opruimen. Ze vragen of je helpt.\n2. Er is een feestje vanavond. Iedereen gaat.\n3. Je bent moe van de week. Je wilt eigenlijk niks.',
+    relevantHabits: ['me-time', 'finish-tasks'],
+    choices: [
+      {
+        id: 'ouders-helpen',
+        label: 'Ouders helpen',
+        subtext: 'Ik zeg toe dat ik morgen help. Dan heb ik vanavond vrij.',
+        category: 'work',
+        points: 10,
+        bubbleEffect: 1,
+      },
+      {
+        id: 'feestje',
+        label: 'Naar het feestje',
+        subtext: 'Het is vrijdag. Ik heb het verdiend. Het huis kan wachten.',
+        category: 'social',
+        points: 5,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'thuisblijven',
+        label: 'Thuisblijven, niks doen',
+        subtext: 'Ik zeg dat ik moe ben en ga vanavond vroeg naar bed.',
+        category: 'rest',
+        points: 15,
+        bubbleEffect: 2,
+      },
+      {
+        id: 'alles-beloven',
+        label: 'Alles beloven',
+        subtext: 'Ik zeg ja tegen mijn ouders EN ja tegen het feestje. Komt wel goed.',
+        category: 'neutral',
+        points: 0,
+        bubbleEffect: -1,
+      },
+    ],
+    bqResponses: {
+      'ouders-helpen': {
+        message: 'Je plant vooruit. Dat geeft rust.',
+        quote: 'Maar vanavond alleen thuis terwijl iedereen op het feestje is...',
+      },
+      'feestje': {
+        message: 'Je kiest voor sociale tijd. Weekends zijn er ook voor.',
+        quote: 'Je ouders zijn teleurgesteld maar zeggen niks.',
+      },
+      'thuisblijven': {
+        message: 'Je luistert naar je lichaam, {name}. Rust na een drukke week.',
+        quote: 'De FOMO kriebelt een beetje. Maar je bent ook opgelucht.',
+        badge: 'fomo-fighter',
+        habitMessage: {
+          'me-time': 'Dit is precies wat je wilde - tijd voor jezelf!',
+        },
+      },
+      'alles-beloven': {
+        message: 'Je zegt ja tegen alles. Herkenbaar.',
+        quote: 'Hoe ga je dit waarmaken?',
+      },
+    },
+  },
+
+  // Scene 2.B: Na School Energie (beweging)
+  {
+    id: 'na-school-energie',
+    day: 2,
+    isCore: false,
+    time: '16:00',
+    location: 'Fietsend naar huis',
+    intro: 'Je fietst naar huis. De toets zit erop.',
+    text: 'Je voelt de spanning van de week in je schouders.\n\nJe neef stuurt: "Voetballen in het park? Over een uur?"\n\nJe hebt ook nog je sporttas in je kluisje laten liggen. En je was eigenlijk van plan om vanavond uit te rusten.',
+    relevantHabits: ['more-exercise', 'take-breaks'],
+    choices: [
+      {
+        id: 'voetballen',
+        label: 'Voetballen, spanning kwijtraken',
+        subtext: 'Bewegen na een stressweek. Dat is precies wat ik nodig heb.',
+        category: 'rest',
+        points: 15,
+        bubbleEffect: 2,
+      },
+      {
+        id: 'thuis-stretchen',
+        label: 'Thuis, maar wel stretchen',
+        subtext: 'Ik ga niet voetballen, maar doe thuis wat yoga of stretches.',
+        category: 'rest',
+        points: 10,
+        bubbleEffect: 1,
+      },
+      {
+        id: 'niks-fysiek',
+        label: 'Niks fysiek, gewoon rusten',
+        subtext: 'Mijn hoofd is moe. Mijn lichaam kan ook even niks.',
+        category: 'rest',
+        points: 5,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'solo-hardlopen',
+        label: 'Hardlopen in je eentje',
+        subtext: 'Ik ga even rennen. Alleen. Even mijn hoofd leeg maken.',
+        category: 'rest',
+        points: 10,
+        bubbleEffect: 1,
+      },
+    ],
+    bqResponses: {
+      'voetballen': {
+        message: 'Samen bewegen. Sociaal + fysiek in één.',
+        habitMessage: {
+          'more-exercise': 'Perfect! Dit is je doel in actie.',
+        },
+      },
+      'thuis-stretchen': {
+        message: 'Rustige beweging. Je lichaam verzorgen zonder het uit te putten.',
+        habitMessage: {
+          'more-exercise': 'Lichte beweging telt ook!',
+          'take-breaks': 'Yoga als rust - slim.',
+        },
+      },
+      'niks-fysiek': {
+        message: 'Volledige rust. Ook dat is een keuze.',
+        quote: 'Hoe lang is het geleden dat je bewoog?',
+        habitMessage: {
+          'more-exercise': 'Rust is oké, maar wordt dit een patroon?',
+        },
+      },
+      'solo-hardlopen': {
+        message: 'Solo beweging. Tijd met jezelf.',
+        quote: 'Hardlopen kan helpen om gedachten te ordenen.',
+        habitMessage: {
+          'more-exercise': 'Goed bezig! Beweging op jouw manier.',
+        },
+      },
+    },
+  },
+
+  // Scene 2.4: De Avond
+  {
+    id: 'de-avond',
+    day: 2,
+    isCore: false,
+    time: '22:00',
+    location: 'Varieert',
+    intro: '',
+    text: 'Je ligt op de bank. Je telefoon laat zien wat je mist: stories van het feestje, lachende gezichten, inside jokes waar je niet bij bent.',
+    relevantHabits: ['less-phone', 'me-time'],
+    choices: [
+      {
+        id: 'stories-checken',
+        label: 'Stories blijven checken',
+        subtext: 'Ik kijk wat ze doen. Gewoon even.',
+        category: 'scroll',
+        points: 0,
+        bubbleEffect: -1,
+      },
+      {
+        id: 'telefoon-weg-film',
+        label: 'Telefoon weg, film kijken',
+        subtext: 'Ik leg mijn telefoon in een andere kamer en kijk een film.',
+        category: 'rest',
+        points: 10,
+        bubbleEffect: 1,
+      },
+      {
+        id: 'vroeg-slapen',
+        label: 'Vroeg slapen',
+        subtext: 'Ik ben moe. Morgen is er ook nog een dag.',
+        category: 'rest',
+        points: 15,
+        bubbleEffect: 2,
+      },
+    ],
+    bqResponses: {
+      'stories-checken': {
+        message: 'FOMO is menselijk. Je wilt weten wat je mist.',
+        quote: 'Maar maakt kijken het beter of erger?',
+        habitMessage: {
+          'less-phone': 'Je wilde minder op je telefoon... Dit is lastig.',
+        },
+      },
+      'telefoon-weg-film': {
+        message: 'Je beschermt jezelf tegen de vergelijking. Slim.',
+        habitMessage: {
+          'less-phone': 'Telefoon weg - precies je doel!',
+          'me-time': 'Film kijken is ook zelfzorg.',
+        },
+      },
+      'vroeg-slapen': {
+        message: 'Rust, {name}. Je lichaam wint het van je FOMO.',
+        badge: 'fomo-fighter',
+        habitMessage: {
+          'sleep-on-time': 'Perfect voor je slaap-doel!',
+        },
+      },
+    },
+  },
+
+  // ============================================
+  // DAG 3: Weekend
+  // ============================================
+
+  // Scene 3.1: Weekend Ochtend
+  {
+    id: 'weekend-ochtend',
+    day: 3,
+    isCore: false,
+    time: '10:30',
+    location: 'Bed',
+    intro: 'Het is zaterdagochtend. Je bent net wakker.',
+    text: 'Je telefoon toont: 127 ongelezen berichten in de groepsapp (recap van gisteravond), 3 Instagram DMs, en een herinnering: "Oma\'s verjaardag - 14:00".\n\nO ja. Je oma wordt 80 vandaag.',
     relevantHabits: ['less-phone', 'sleep-on-time'],
     choices: [
       {
-        id: 'a',
-        label: 'Direct telefoon checken',
-        subtext: 'Even kijken wat ik gemist heb vannacht.',
+        id: 'eerst-berichten',
+        label: 'Eerst berichten checken',
+        subtext: 'Ik wil weten wat ik gemist heb. Daarna sta ik op.',
         category: 'scroll',
         points: 0,
         bubbleEffect: -1,
       },
       {
-        id: 'b',
-        label: 'Eerst douchen en ontbijten',
-        subtext: 'Telefoon kan wachten.',
+        id: 'direct-opstaan',
+        label: 'Direct opstaan, telefoon later',
+        subtext: 'Nee. Eerst douchen en ontbijten. Berichten lopen niet weg.',
         category: 'rest',
         points: 10,
         bubbleEffect: 1,
       },
       {
-        id: 'c',
-        label: 'Snoozen...',
-        subtext: 'Nog 10 minuten... zzz',
+        id: 'snooze',
+        label: 'Snooze-modus: nog even liggen',
+        subtext: 'Ik blijf nog even liggen zonder telefoon. Even wakker worden.',
         category: 'rest',
+        points: 5,
+        bubbleEffect: 0,
+      },
+    ],
+    bqResponses: {
+      'eerst-berichten': {
+        message: '127 berichten. Dat is veel om te verwerken voor je ogen echt open zijn.',
+        quote: '40 minuten later lig je nog in bed.',
+        habitMessage: {
+          'less-phone': 'Direct op je telefoon... Herkenbaar maar lastig.',
+        },
+      },
+      'direct-opstaan': {
+        message: 'Je start de dag zonder scherm. De berichten wachten wel.',
+        habitMessage: {
+          'less-phone': 'Telefoon kan wachten - goed bezig!',
+        },
+      },
+      'snooze': {
+        message: 'Even zijn met je gedachten. Geen input, geen output.',
+        quote: 'Hoe vaak gun je jezelf dit?',
+      },
+    },
+  },
+
+  // Scene 3.B: Zondag Ochtend Beweging (beweging)
+  {
+    id: 'zondag-beweging',
+    day: 3,
+    isCore: false,
+    time: '09:30',
+    location: 'Slaapkamer',
+    intro: 'Het is zondagochtend. Je wordt wakker en voelt hoe je lichaam ervoor staat.',
+    text: 'Je had gisteren een drukke dag bij oma. Vandaag is vrij - maar morgen begint de week weer.\n\nJe sportschema zegt: "Rustdag". Maar je voelt je eigenlijk best energiek.',
+    relevantHabits: ['more-exercise', 'take-breaks'],
+    choices: [
+      {
+        id: 'toch-bewegen',
+        label: 'Toch bewegen - lichte workout',
+        subtext: 'Ik voel me goed. Een wandeling of lichte yoga kan geen kwaad.',
+        category: 'rest',
+        points: 10,
+        bubbleEffect: 1,
+      },
+      {
+        id: 'rustdag-respecteren',
+        label: 'Rustdag respecteren',
+        subtext: 'Het schema zegt rust. Mijn lichaam heeft herstel nodig.',
+        category: 'rest',
+        points: 15,
+        bubbleEffect: 2,
+      },
+      {
+        id: 'intensief',
+        label: 'Iets uitdagends doen',
+        subtext: 'Ik heb zin in iets intensiefs. Een goede workout om de week te starten.',
+        category: 'rest',
+        points: 5,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'plannen-later',
+        label: 'Plannen voor later',
+        subtext: 'Ik beslis straks wel. Eerst even wakker worden.',
+        category: 'neutral',
         points: 0,
         bubbleEffect: 0,
       },
     ],
     bqResponses: {
-      a: {
-        message: 'De dag beginnen met scrollen kan je energie beïnvloeden.\n\nProbeer morgen eens zonder telefoon te starten?',
+      'toch-bewegen': {
+        message: 'Actieve rust. Je luistert naar je lichaam én je energie.',
+        quote: 'Lichte beweging kan helpen zonder te overbelasten.',
         habitMessage: {
-          'less-phone': 'Direct op je telefoon... Probeer morgen eerst te ontbijten?',
+          'more-exercise': 'Goed! Luisteren naar je lichaam.',
         },
       },
-      b: {
-        message: 'Goed bezig! Een rustige start zet de toon voor de dag.',
-        badge: 'ochtend-ritueel',
+      'rustdag-respecteren': {
+        message: 'Je respecteert je herstel. Dat is ook discipline, {name}.',
+        quote: 'Rust is onderdeel van progressie.',
+        badge: 'lichaam-luisteraar',
         habitMessage: {
-          'less-phone': 'Telefoon kan wachten - precies de mindset die je wilt!',
+          'more-exercise': 'Rust is deel van bewegen!',
+          'take-breaks': 'Perfect - herstel is essentieel.',
         },
       },
-      c: {
-        message: 'Snoozen voelt lekker, maar maakt je vaak juist moe-er.\n\nMorgen direct opstaan?',
+      'intensief': {
+        message: 'Je energie is hoog. Maar is dat adrenaline of echt herstel?',
+        quote: 'Soms voelt het lichaam beter dan het is.',
         habitMessage: {
-          'sleep-on-time': 'Als je op tijd naar bed gaat, is opstaan makkelijker!',
+          'more-exercise': 'Enthousiasme is goed, maar let op overtraining.',
         },
+      },
+      'plannen-later': {
+        message: 'Uitstellen. Herkenbaar patroon?',
+        quote: 'Beslissingen worden niet makkelijker door te wachten.',
       },
     },
   },
 
-  // Scene 8: Lunchpauze
+  // Scene 3.2: Oma's Verjaardag (KERN)
   {
-    id: 'lunchpauze',
-    time: '12:30',
-    location: 'School',
-    intro: '',
-    text: 'Het is pauze op school. Je zit met je vrienden.\n\nIedereen is op hun telefoon. Het is stil.',
-    relevantHabits: ['less-phone', 'more-exercise', 'take-breaks'],
+    id: 'oma-verjaardag',
+    day: 3,
+    isCore: true,
+    time: '14:00',
+    location: 'Bij oma',
+    intro: 'Je bent bij oma. De hele familie is er.',
+    text: 'Ooms, tantes, neven, nichten.\n\nOma is blij je te zien. Ze vraagt naar school, naar je vrienden, naar "die dingen op je telefoon".\n\nHet gesprek gaat moeizaam. Je neef van 12 zit naast je, ook op zijn telefoon.',
+    relevantHabits: ['less-phone'],
     choices: [
       {
-        id: 'a',
-        label: 'Meedoen, ook scrollen',
-        subtext: 'Als iedereen het doet...',
+        id: 'telefoon-zak',
+        label: 'Telefoon in je zak houden',
+        subtext: 'Ik probeer aanwezig te zijn. Dit is oma\'s dag.',
+        category: 'social',
+        points: 15,
+        bubbleEffect: 2,
+      },
+      {
+        id: 'af-en-toe',
+        label: 'Af en toe checken',
+        subtext: 'Ik check af en toe even. Oma merkt het niet.',
         category: 'scroll',
         points: 0,
         bubbleEffect: -1,
       },
       {
-        id: 'b',
-        label: 'Even naar buiten',
-        subtext: 'Ik ga even een rondje lopen.',
-        category: 'rest',
-        points: 5,
-        bubbleEffect: 1,
+        id: 'met-neef',
+        label: 'Met je neef samen op telefoon',
+        subtext: 'Ik ga naast mijn neef zitten. Dan zijn we samen "afwezig".',
+        category: 'scroll',
+        points: 0,
+        bubbleEffect: -1,
       },
       {
-        id: 'c',
-        label: 'Praten met iemand',
-        subtext: 'Ik leg mijn telefoon weg en begin een gesprek.',
+        id: 'oma-vragen',
+        label: 'Oma vragen over vroeger',
+        subtext: 'Ik vraag oma iets over haar leven. Misschien heeft ze verhalen.',
         category: 'social',
-        points: 10,
-        bubbleEffect: 1,
+        points: 15,
+        bubbleEffect: 2,
       },
     ],
     bqResponses: {
-      a: {
-        message: 'Groepsdruk is sterk. Maar jij mag anders kiezen.',
+      'telefoon-zak': {
+        message: 'Je bent er, {name}. Fysiek én mentaal.',
+        quote: 'Het is soms saai. Maar oma glimlacht als ze je ziet.',
         habitMessage: {
-          'less-phone': 'Je wilde minder op je telefoon. Groepsdruk is lastig!',
+          'less-phone': 'Telefoon weg bij familie - goed bezig!',
         },
       },
-      b: {
-        message: 'Frisse lucht en beweging, goed voor je hoofd!',
+      'af-en-toe': {
+        message: 'Je balanceert aanwezigheid en verbondenheid online.',
+        quote: 'Oma merkt het misschien niet. Je moeder wel.',
         habitMessage: {
-          'more-exercise': 'Rondje lopen in de pauze - perfect voor je beweeg-doel!',
-          'take-breaks': 'Echte pauze: even weg van het scherm. Top!',
+          'less-phone': 'Je wilde minder op je telefoon...',
         },
       },
-      c: {
-        message: 'Echte gesprekken geven meer energie dan scrollen.',
-        quote: 'Sociale connectie is ook balans.',
-        habitMessage: {
-          'less-phone': 'Telefoon weg, echte connectie - dubbele winst!',
-        },
+      'met-neef': {
+        message: 'Samen zijn kan ook naast elkaar zitten zonder te praten.',
+        quote: 'Je neef is blij. Oma kijkt jullie kant op.',
+      },
+      'oma-vragen': {
+        message: 'Je toont interesse. Dat is een cadeau op zich.',
+        quote: 'Oma\'s ogen lichten op. Ze begint te vertellen over 1965...',
+        badge: 'generatie-verbinder',
       },
     },
   },
 
-  // Scene 9: Het Weekend
+  // Scene 3.3: De Zondag Vraag
   {
-    id: 'het-weekend',
-    time: 'Zaterdagochtend',
+    id: 'zondag-vraag',
+    day: 3,
+    isCore: false,
+    time: '20:00',
     location: 'Thuis',
-    intro: '',
-    text: 'Het is zaterdagochtend. Geen school vandaag!\n\nJe hebt de hele dag voor jezelf. Wat ga je doen?',
-    relevantHabits: ['me-time', 'more-exercise', 'finish-tasks'],
+    intro: 'Je bent thuis van oma. Morgen is zondag - laatste dag voor de schoolweek weer begint.',
+    text: 'Je hebt een project dat maandag af moet. Je bent voor 60% klaar. Het is haalbaar, maar je moet er wel aan werken.\n\nJe vrienden appen: "Morgen naar het strand? Laatste mooie dag van het jaar!"',
+    relevantHabits: ['finish-tasks', 'me-time'],
     choices: [
       {
-        id: 'a',
-        label: 'Uitslapen en Netflix',
-        subtext: 'Ik heb rust verdiend. Netflix-dag!',
-        category: 'rest',
+        id: 'project-afmaken',
+        label: 'Project afmaken, strand skippen',
+        subtext: 'Ik maak morgen het project af. Dan heb ik rust in mijn hoofd.',
+        category: 'work',
+        points: 10,
+        bubbleEffect: 0,
+      },
+      {
+        id: 'strand-avond',
+        label: 'Naar het strand, project \'s avonds',
+        subtext: 'Ik ga naar het strand. \'s Avonds werk ik door.',
+        category: 'social',
         points: 5,
         bubbleEffect: 0,
       },
       {
-        id: 'b',
-        label: 'Iets met vrienden',
-        subtext: 'Ik spreek af met vrienden.',
-        category: 'social',
+        id: 'ochtend-middag',
+        label: 'Ochtend project, middag strand',
+        subtext: 'Ik doe \'s ochtends het project, dan ga ik \'s middags.',
+        category: 'work',
         points: 10,
         bubbleEffect: 1,
       },
       {
-        id: 'c',
-        label: 'Vooruit werken',
-        subtext: 'Ik ga alvast wat doen voor volgende week.',
-        category: 'work',
-        points: 5,
-        bubbleEffect: 0,
+        id: 'morgen-beslissen',
+        label: 'Weet ik morgen wel',
+        subtext: 'Ik beslis morgen wel. Nu hoef ik nog niet te kiezen.',
+        category: 'neutral',
+        points: 0,
+        bubbleEffect: -1,
       },
     ],
     bqResponses: {
-      a: {
-        message: 'Weekends zijn voor herstel! Geniet ervan.\n\nLet wel op: de hele dag binnen kan je energie juist verlagen.',
+      'project-afmaken': {
+        message: 'Je kiest voor zekerheid. Het project is maandag echt af.',
+        quote: 'Je vrienden gaan zonder jou. Ze sturen foto\'s.',
         habitMessage: {
-          'me-time': 'Tijd voor jezelf - dat is precies wat je wilde!',
-          'more-exercise': 'Tip: combineer Netflix met een wandeling later?',
+          'finish-tasks': 'Dit past bij je doel!',
         },
       },
-      b: {
-        message: 'Leuk! Sociale tijd is belangrijk voor je welzijn.',
-        quote: 'Balans ziet er voor iedereen anders uit.',
+      'strand-avond': {
+        message: 'Je vertrouwt erop dat je \'s avonds nog energie hebt.',
+        quote: 'Na een dag strand? We zullen zien.',
+      },
+      'ochtend-middag': {
+        message: 'Je probeert beide te doen. Dat kan, als je discipline hebt.',
+        quote: 'Sta je op tijd op morgen?',
         habitMessage: {
-          'more-exercise': 'Ga iets actiefs doen met je vrienden!',
+          'finish-tasks': 'Slimme aanpak voor je doel.',
         },
       },
-      c: {
-        message: 'Slim om vooruit te denken!\n\nMaar vergeet niet ook te ontspannen. Weekends zijn ook voor rust.',
-        habitMessage: {
-          'finish-tasks': 'Vooruit werken past bij je doel om taken af te maken.',
-          'me-time': 'Vergeet niet ook tijd voor jezelf te nemen!',
-        },
+      'morgen-beslissen': {
+        message: 'Uitstellen van de beslissing. Ook dat is een patroon.',
+        quote: 'Morgen ben je dezelfde persoon met dezelfde keuze.',
       },
     },
   },
 
-  // Scene 10: Reflectie
+  // Scene 3.4: Reflectie (KERN)
   {
     id: 'reflectie',
-    intro: 'Even stilstaan...',
-    text: 'Je kijkt terug op de keuzes die je hebt gemaakt.\n\nHoe voel je je?',
-    // This scene is relevant to all habits - it's the reflection moment
+    day: 3,
+    isCore: true,
+    time: '21:30',
+    location: 'Slaapkamer',
+    intro: 'Zondagavond. Het weekend is voorbij.',
+    text: 'Je ligt in bed. Balance Quest vraagt:\n\n"Hoe was dit weekend voor je balans?"',
     choices: [
       {
         id: 'goed',
-        label: 'Best goed',
+        label: '😊 Goed, ik heb gedaan wat ik wilde',
         subtext: 'Ik heb bewuste keuzes gemaakt.',
         category: 'neutral',
-        points: 5,
+        points: 10,
         bubbleEffect: 1,
       },
       {
         id: 'gemengd',
-        label: 'Gemengd',
-        subtext: 'Sommige dingen had ik anders willen doen.',
+        label: '🤔 Gemengd, sommige dingen had ik anders gedaan',
+        subtext: 'Niet perfect, maar ook niet slecht.',
         category: 'neutral',
         points: 5,
         bubbleEffect: 0,
       },
       {
-        id: 'moeilijk',
-        label: 'Het is moeilijk',
-        subtext: 'Balans vinden is echt lastig.',
+        id: 'mwah',
+        label: '😩 Mwah, ik liep weer achter de feiten aan',
+        subtext: 'Ik reageerde vooral, in plaats van te kiezen.',
         category: 'neutral',
         points: 5,
         bubbleEffect: 0,
       },
     ],
     bqResponses: {
-      goed: {
-        message: 'Fijn om te horen, {name}! Bewustzijn is de eerste stap.',
+      'goed': {
+        message: 'Bewust kiezen voelt goed, {name}. Onthoud dat gevoel.',
       },
-      gemengd: {
-        message: 'Herkenbaar. Elke dag is een nieuwe kans om te leren.',
-        quote: 'Niet perfect, wel vooruit.',
+      'gemengd': {
+        message: 'Gemengd is menselijk. Perfecte weekenden bestaan niet.',
+        quote: 'Wat zou je volgende week anders doen?',
       },
-      moeilijk: {
-        message: 'Dat is het ook. Daarom is Balance Quest er - om je te helpen zonder te oordelen.',
-        quote: 'Kleine stappen brengen je verder dan je denkt.',
+      'mwah': {
+        message: 'Herken je dat patroon? Reageren in plaats van kiezen?',
+        quote: 'Eén bewuste keuze per dag kan al verschil maken.',
       },
     },
   },
 ]
+
+// Get scenes for a specific day
+export function getScenesForDay(day: 1 | 2 | 3): Scene[] {
+  return SCENES.filter(scene => scene.day === day)
+}
+
+// Get all core scenes
+export function getCoreScenes(): Scene[] {
+  return SCENES.filter(scene => scene.isCore)
+}

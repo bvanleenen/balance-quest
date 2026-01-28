@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GameState, Habit, Choice } from './gameState'
-import { initialGameState, getBubbleState, BADGES, BUBBLE_STATE_INFO } from './gameState'
+import { initialGameState, getBubbleState, BADGES, BUBBLE_STATE_INFO, filterScenesForHabits } from './gameState'
 import { SCENES } from './scenes'
 import { WelcomeScreen, NameScreen, HabitsScreen, BubbleIntroScreen } from './components/Onboarding'
 import { SceneView } from './components/SceneView'
@@ -9,6 +9,7 @@ import { BQNotification } from './components/BQNotification'
 import { AppShell } from './components/AppShell'
 import type { TabId } from './components/AppShell/NavBar'
 import { InsightsView, ProfileView, SettingsView, CompletedHomeView } from './components/Views'
+import { DayEndScreen } from './components/DayEndScreen'
 import { PresentationView } from './components/Presentation'
 import './index.css'
 
@@ -53,7 +54,14 @@ function App() {
   }, [])
 
   const setHabits = useCallback((habits: Habit[]) => {
-    setGameState(s => ({ ...s, selectedHabits: habits, phase: 'bubbleIntro' }))
+    // Filter scenes based on selected habits
+    const filtered = filterScenesForHabits(SCENES, habits)
+    setGameState(s => ({
+      ...s,
+      selectedHabits: habits,
+      filteredScenes: filtered,
+      phase: 'bubbleIntro'
+    }))
   }, [])
 
   const startPlaying = useCallback(() => {
@@ -66,8 +74,22 @@ function App() {
     setTimeout(() => setShowBubbleStatus(false), 3000)
   }, [])
 
+  // Use filtered scenes
+  const activeScenes = gameState.filteredScenes.length > 0 ? gameState.filteredScenes : SCENES
+
+  // Get scenes for current day
+  const currentDayScenes = useMemo(() => {
+    return activeScenes.filter(s => s.day === gameState.currentDay)
+  }, [activeScenes, gameState.currentDay])
+
+  // Find current scene index within current day
+  const currentDaySceneIndex = useMemo(() => {
+    const scenesBeforeCurrentDay = activeScenes.filter(s => s.day < gameState.currentDay).length
+    return gameState.currentSceneIndex - scenesBeforeCurrentDay
+  }, [activeScenes, gameState.currentSceneIndex, gameState.currentDay])
+
   const handleChoice = useCallback((choice: Choice) => {
-    const currentScene = SCENES[gameState.currentSceneIndex]
+    const currentScene = activeScenes[gameState.currentSceneIndex]
     const response = currentScene.bqResponses[choice.id]
 
     // Calculate new state
@@ -79,8 +101,8 @@ function App() {
       newBadges.push(response.badge)
     }
 
-    // Calculate day progress
-    const newDayProgress = (gameState.currentSceneIndex + 1) / SCENES.length
+    // Calculate day progress (within current day)
+    const newDayProgress = (currentDaySceneIndex + 1) / currentDayScenes.length
 
     // Update game state
     setGameState(s => ({
@@ -117,19 +139,45 @@ function App() {
       points: choice.points > 0 ? choice.points : undefined,
       badge: badge ? { name: badge.name, icon: badge.icon } : undefined,
     })
-  }, [gameState])
+  }, [gameState, activeScenes, currentDaySceneIndex, currentDayScenes.length])
 
   const closeNotification = useCallback(() => {
     setNotification(null)
 
-    // Move to next scene or end game
+    // Move to next scene, day end, or end game
     const nextIndex = gameState.currentSceneIndex + 1
-    if (nextIndex >= SCENES.length) {
+
+    if (nextIndex >= activeScenes.length) {
+      // Game complete
       setGameState(s => ({ ...s, phase: 'reflection' }))
     } else {
-      setGameState(s => ({ ...s, currentSceneIndex: nextIndex }))
+      const nextScene = activeScenes[nextIndex]
+      const currentScene = activeScenes[gameState.currentSceneIndex]
+
+      // Check if we're moving to a new day
+      if (nextScene.day !== currentScene.day) {
+        setGameState(s => ({ ...s, phase: 'dayEnd' }))
+      } else {
+        setGameState(s => ({ ...s, currentSceneIndex: nextIndex }))
+      }
     }
-  }, [gameState.currentSceneIndex])
+  }, [gameState.currentSceneIndex, activeScenes])
+
+  const handleContinueToNextDay = useCallback(() => {
+    const nextIndex = gameState.currentSceneIndex + 1
+    const nextScene = activeScenes[nextIndex]
+    setGameState(s => ({
+      ...s,
+      currentSceneIndex: nextIndex,
+      currentDay: nextScene.day as 1 | 2 | 3,
+      dayProgress: 0,
+      phase: 'playing'
+    }))
+  }, [gameState.currentSceneIndex, activeScenes])
+
+  const handleEndGame = useCallback(() => {
+    setGameState(s => ({ ...s, phase: 'reflection' }))
+  }, [])
 
   const restart = useCallback(() => {
     setGameState(initialGameState)
@@ -142,7 +190,7 @@ function App() {
       case 'home':
         // During playing: show scene, after completion: show summary
         if (gameState.phase === 'playing') {
-          const currentScene = SCENES[gameState.currentSceneIndex]
+          const currentScene = activeScenes[gameState.currentSceneIndex]
           return (
             <SceneView
               scene={currentScene}
@@ -150,7 +198,8 @@ function App() {
               bubbleState={bubbleState}
               points={gameState.points}
               earnedBadges={gameState.badges}
-              progress={(gameState.currentSceneIndex + 1) / SCENES.length}
+              progress={(currentDaySceneIndex + 1) / currentDayScenes.length}
+              day={gameState.currentDay}
               onChoice={handleChoice}
               onBubbleClick={handleBubbleClick}
             />
@@ -191,6 +240,17 @@ function App() {
           <BubbleIntroScreen
             playerName={gameState.playerName}
             onContinue={startPlaying}
+          />
+        )
+
+      case 'dayEnd':
+        return (
+          <DayEndScreen
+            day={gameState.currentDay}
+            choices={gameState.choices}
+            points={gameState.points}
+            onContinue={handleContinueToNextDay}
+            onEnd={handleEndGame}
           />
         )
 

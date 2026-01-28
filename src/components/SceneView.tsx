@@ -12,11 +12,18 @@ interface SceneViewProps {
   points: number
   earnedBadges: string[]
   progress: number
+  day?: 1 | 2 | 3
   onChoice: (choice: Choice) => void
   onBubbleClick?: () => void
 }
 
-export function SceneView({ scene, playerName, bubbleState, points, earnedBadges, progress, onChoice, onBubbleClick }: SceneViewProps) {
+const DAY_LABELS: Record<1 | 2 | 3, string> = {
+  1: 'Dag 1 • Donderdag',
+  2: 'Dag 2 • Vrijdag',
+  3: 'Dag 3 • Weekend',
+}
+
+export function SceneView({ scene, playerName, bubbleState, points, earnedBadges, progress, day, onChoice, onBubbleClick }: SceneViewProps) {
   const [phase, setPhase] = useState<'intro' | 'text' | 'choices'>('intro')
   const [visibleLines, setVisibleLines] = useState(0)
   const [hoveredChoice, setHoveredChoice] = useState<string | null>(null)
@@ -79,6 +86,17 @@ export function SceneView({ scene, playerName, bubbleState, points, earnedBadges
       {/* Sticky top section: Progress bar + Bubble Habitat */}
       <div className="bubble-companion-section">
         <div className="sticky-header-content">
+          {day && (
+            <div style={{
+              fontSize: 'var(--font-size-xs)',
+              color: 'var(--color-text-muted)',
+              textAlign: 'center',
+              marginBottom: 'var(--space-xs)',
+              fontWeight: 500,
+            }}>
+              {DAY_LABELS[day]}
+            </div>
+          )}
           <ProgressBar progress={progress} />
           <BubbleHabitat
             bubbleState={bubbleState}

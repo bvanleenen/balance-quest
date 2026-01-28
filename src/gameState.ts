@@ -53,6 +53,8 @@ export interface Scene {
   text: string
   choices: Choice[]
   relevantHabits?: Habit[] // Which habits this scene relates to for personalization
+  isCore?: boolean // Core scenes are always shown regardless of habit selection
+  day: 1 | 2 | 3 // Which day this scene belongs to
   bqResponses: Record<string, {
     message: string
     quote?: string
@@ -62,19 +64,55 @@ export interface Scene {
   }>
 }
 
-export type GamePhase = 'welcome' | 'name' | 'habits' | 'bubbleIntro' | 'playing' | 'reflection' | 'results'
+// Filter scenes based on selected habits
+export function filterScenesForHabits(scenes: Scene[], selectedHabits: Habit[]): Scene[] {
+  // If all 6 habits selected, show all scenes
+  if (selectedHabits.length >= 5) {
+    return scenes
+  }
+
+  const filteredScenes: Scene[] = []
+  let hasEyeOpener = false
+
+  for (const scene of scenes) {
+    // Core scenes are always included
+    if (scene.isCore) {
+      filteredScenes.push(scene)
+      continue
+    }
+
+    // Check if scene matches any selected habit
+    const matchesHabit = scene.relevantHabits?.some(habit =>
+      selectedHabits.includes(habit)
+    )
+
+    if (matchesHabit) {
+      filteredScenes.push(scene)
+    } else if (!hasEyeOpener && selectedHabits.length <= 2) {
+      // Add one eye-opener scene for users with few habits selected
+      filteredScenes.push(scene)
+      hasEyeOpener = true
+    }
+  }
+
+  return filteredScenes
+}
+
+export type GamePhase = 'welcome' | 'name' | 'habits' | 'bubbleIntro' | 'playing' | 'dayEnd' | 'reflection' | 'results'
 
 export interface GameState {
   phase: GamePhase
   playerName: string
   selectedHabits: Habit[]
   currentSceneIndex: number
+  currentDay: 1 | 2 | 3
   choices: { sceneId: string; choiceId: string; category: ChoiceCategory }[]
   points: number
   badges: string[]
   bubbleScore: number // -10 to +10, determines bubble state
   timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night'
   dayProgress: number // 0 to 1, represents progress through the simulated day
+  filteredScenes: Scene[] // Scenes filtered based on selected habits
 }
 
 export const initialGameState: GameState = {
@@ -82,12 +120,14 @@ export const initialGameState: GameState = {
   playerName: '',
   selectedHabits: [],
   currentSceneIndex: 0,
+  currentDay: 1,
   choices: [],
   points: 0,
   badges: [],
   bubbleScore: 7, // Start positive
   timeOfDay: 'afternoon',
   dayProgress: 0,
+  filteredScenes: [],
 }
 
 // Enhanced bubble state calculation with 5 states
@@ -229,6 +269,36 @@ export const BADGES = {
     name: 'Ochtend Ritueel',
     description: 'Je begon de dag zonder direct te scrollen.',
     icon: 'Sunrise',
+  },
+  'uitgestelde-bevrediging': {
+    id: 'uitgestelde-bevrediging',
+    name: 'Uitgestelde Bevrediging',
+    description: 'Je koos om iets op te slaan voor later.',
+    icon: 'Clock',
+  },
+  'stem-gebruiken': {
+    id: 'stem-gebruiken',
+    name: 'Stem Gebruiken',
+    description: 'Je sprak je uit, ook als het ongemakkelijk was.',
+    icon: 'MessageCircle',
+  },
+  'fomo-fighter': {
+    id: 'fomo-fighter',
+    name: 'FOMO Fighter',
+    description: 'Je koos rust boven angst om iets te missen.',
+    icon: 'Shield',
+  },
+  'generatie-verbinder': {
+    id: 'generatie-verbinder',
+    name: 'Generatie-verbinder',
+    description: 'Je maakte echt contact met iemand van een andere generatie.',
+    icon: 'Heart',
+  },
+  'lichaam-luisteraar': {
+    id: 'lichaam-luisteraar',
+    name: 'Lichaam Luisteraar',
+    description: 'Je stopte toen je lichaam signalen gaf.',
+    icon: 'Activity',
   },
 }
 
