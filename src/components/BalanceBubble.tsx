@@ -1,7 +1,6 @@
 import { useRef, useMemo, useCallback, useState, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Sphere, MeshDistortMaterial, Billboard } from '@react-three/drei'
-import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import { Sphere, Billboard } from '@react-three/drei'
 import * as THREE from 'three'
 import type { BubbleState, BubbleExpression } from '../gameState'
 import { BUBBLE_STATE_INFO } from '../gameState'
@@ -123,13 +122,11 @@ function Bubble({ state, size, onClick }: BubbleProps) {
       scale={bubbleSize}
       onClick={handleClick}
     >
-      <MeshDistortMaterial
+      <meshStandardMaterial
         color={getStateColor(state)}
-        distort={animation.distort}
-        speed={1.5}
-        roughness={0.15}
+        roughness={0.3}
         metalness={0.1}
-        toneMapped={false}
+        envMapIntensity={0.5}
       />
     </Sphere>
   )
@@ -483,19 +480,10 @@ export function BalanceBubble({
         {/* Ensure transparent background */}
         <TransparentBackground />
 
-        {/* Lighting */}
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={1} color="#fff" />
-        <pointLight position={[-5, -5, 5]} intensity={0.5} color="#6366F1" />
-        {(size === 'full' || size === 'medium') && (
-          <spotLight
-            position={[0, 5, 3]}
-            intensity={0.6}
-            color="#A78BFA"
-            angle={0.5}
-            penumbra={1}
-          />
-        )}
+        {/* Clean lighting - no colored lights that affect bubble color */}
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
+        <directionalLight position={[-3, -3, 2]} intensity={0.3} color="#ffffff" />
 
         {/* Main bubble */}
         <Bubble state={state} size={size} onClick={onClick} />
@@ -511,15 +499,6 @@ export function BalanceBubble({
 
         {/* Click handler */}
         <ClickHandler onClick={onClick} />
-
-        {/* Post-processing */}
-        <EffectComposer>
-          <Bloom
-            luminanceThreshold={0.2}
-            luminanceSmoothing={0.9}
-            intensity={size === 'small' ? 0.5 : 0.8}
-          />
-        </EffectComposer>
       </Canvas>
     </div>
   )
