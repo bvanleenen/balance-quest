@@ -122,12 +122,7 @@ function Bubble({ state, size, onClick }: BubbleProps) {
       scale={bubbleSize}
       onClick={handleClick}
     >
-      <meshStandardMaterial
-        color={getStateColor(state)}
-        roughness={0.3}
-        metalness={0.1}
-        envMapIntensity={0.5}
-      />
+      <meshBasicMaterial color={getStateColor(state)} />
     </Sphere>
   )
 }
@@ -480,10 +475,8 @@ export function BalanceBubble({
         {/* Ensure transparent background */}
         <TransparentBackground />
 
-        {/* Clean lighting - no colored lights that affect bubble color */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
-        <directionalLight position={[-3, -3, 2]} intensity={0.3} color="#ffffff" />
+        {/* Minimal lighting for face elements */}
+        <ambientLight intensity={1} />
 
         {/* Main bubble */}
         <Bubble state={state} size={size} onClick={onClick} />
