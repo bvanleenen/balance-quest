@@ -44,6 +44,16 @@ export interface Choice {
   bubbleEffect: number // positive = better, negative = worse
 }
 
+// Timed alerts that appear during a scene (simulates real-time bubble observations)
+export type BubbleExpression = 'curious' | 'concerned' | 'supportive' | 'celebratory'
+
+export interface TimedAlert {
+  delay: number // seconds before alert appears
+  message: string // the observation (non-judgmental)
+  type: 'time' | 'pattern' | 'reflection' // type of observation
+  expression?: BubbleExpression // how the bubble "feels"
+}
+
 export interface Scene {
   id: string
   title?: string
@@ -55,6 +65,7 @@ export interface Scene {
   relevantHabits?: Habit[] // Which habits this scene relates to for personalization
   isCore?: boolean // Core scenes are always shown regardless of habit selection
   day: 1 | 2 | 3 // Which day this scene belongs to
+  timedAlert?: TimedAlert // Optional real-time alert during scene
   bqResponses: Record<string, {
     message: string
     quote?: string

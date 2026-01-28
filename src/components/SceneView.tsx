@@ -4,6 +4,7 @@ import { Clock, MapPin, Zap } from 'lucide-react'
 import type { Scene, Choice, BubbleState } from '../gameState'
 import { BubbleHabitat } from './BubbleHabitat'
 import { ProgressBar } from './BQFeatures'
+import { TimedBubbleAlert } from './TimedBubbleAlert'
 
 interface SceneViewProps {
   scene: Scene
@@ -106,6 +107,14 @@ export function SceneView({ scene, playerName, bubbleState, points, earnedBadges
           />
         </div>
       </div>
+
+      {/* Timed bubble alert (simulates real-time observation) */}
+      {scene.timedAlert && (
+        <TimedBubbleAlert
+          alert={scene.timedAlert}
+          sceneId={scene.id}
+        />
+      )}
 
       {/* Middle section: Story content */}
       <div className="scene-story-section">

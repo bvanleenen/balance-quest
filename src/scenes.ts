@@ -74,6 +74,12 @@ export const SCENES: Scene[] = [
     intro: 'Later die avond. Je opent Instagram om te checken of je crush je story heeft gezien.',
     text: '45 minuten later.\n\nJe hebt 200 reels gekeken. Je weet nog steeds niet of die ene persoon keek. Je scrollde er gewoon langs.\n\nHoe voel je je?',
     relevantHabits: ['less-phone'],
+    timedAlert: {
+      delay: 3,
+      message: 'Je bent nu 45 minuten aan het scrollen. Hoe voel je je eigenlijk?',
+      type: 'time',
+      expression: 'curious',
+    },
     choices: [
       {
         id: 'oke',
@@ -255,6 +261,12 @@ export const SCENES: Scene[] = [
     intro: '',
     text: 'Je ligt in bed. Morgen is de toets.\n\nJe opent TikTok. Je ziet een video over iets waar je al weken over nadenkt. De comments zijn interessant.',
     relevantHabits: ['sleep-on-time', 'less-phone'],
+    timedAlert: {
+      delay: 4,
+      message: 'Het is bijna middernacht. Je wekker staat over 7 uur.',
+      type: 'time',
+      expression: 'concerned',
+    },
     choices: [
       {
         id: 'rabbit-hole',
@@ -493,6 +505,12 @@ export const SCENES: Scene[] = [
     intro: 'Het is vrijdagmiddag. Het weekend begint.',
     text: 'Je hebt drie opties:\n\n1. Je ouders willen dit weekend het huis opruimen. Ze vragen of je helpt.\n2. Er is een feestje vanavond. Iedereen gaat.\n3. Je bent moe van de week. Je wilt eigenlijk niks.',
     relevantHabits: ['me-time', 'finish-tasks'],
+    timedAlert: {
+      delay: 3,
+      message: 'Je koos gisteren vooral voor anderen. Wat past vandaag bij jou?',
+      type: 'pattern',
+      expression: 'supportive',
+    },
     choices: [
       {
         id: 'ouders-helpen',
@@ -701,6 +719,12 @@ export const SCENES: Scene[] = [
     intro: 'Het is zaterdagochtend. Je bent net wakker.',
     text: 'Je telefoon toont: 127 ongelezen berichten in de groepsapp (recap van gisteravond), 3 Instagram DMs, en een herinnering: "Oma\'s verjaardag - 14:00".\n\nO ja. Je oma wordt 80 vandaag.',
     relevantHabits: ['less-phone', 'sleep-on-time'],
+    timedAlert: {
+      delay: 4,
+      message: 'Hoe begin je het liefst je dag? De berichten gaan nergens heen.',
+      type: 'reflection',
+      expression: 'curious',
+    },
     choices: [
       {
         id: 'eerst-berichten',
