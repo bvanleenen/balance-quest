@@ -105,35 +105,27 @@ function useMousePosition() {
   return position
 }
 
-interface AnimatedBubbleProps {
-  state: BubbleState
-  tiltX: number
-  tiltY: number
-}
 
-// Main animated bubble mesh
-function AnimatedBubble({ state, tiltX, tiltY }: AnimatedBubbleProps) {
+// Main animated bubble mesh (only handles material animation, not position)
+function AnimatedBubble({ state }: { state: BubbleState }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const materialRef = useRef<any>(null)
   const animation = getStateAnimation(state)
   const color = new THREE.Color(getStateColor(state))
+  const baseScale = 0.55 // Smaller bubble to fit with hands
 
   useFrame(({ clock }) => {
     if (meshRef.current) {
-      // Smooth position based on tilt
-      const targetX = tiltX * 0.3
-      const targetY = tiltY * 0.15
-      meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.05)
-      meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.05)
-
-      // Subtle rotation based on tilt
-      meshRef.current.rotation.z = THREE.MathUtils.lerp(meshRef.current.rotation.z, -tiltX * 0.1, 0.05)
+      // Breathing via scale (subtle)
+      const breathe = Math.sin(clock.elapsedTime * animation.breatheSpeed) * 0.03
+      const scale = baseScale * (1 + breathe)
+      meshRef.current.scale.setScalar(scale)
     }
 
     if (materialRef.current) {
-      // Animate wobble factor for breathing effect
-      const breathe = Math.sin(clock.elapsedTime * animation.breatheSpeed) * 0.1
-      materialRef.current.factor = animation.wobbleFactor + breathe
+      // Animate wobble factor for organic movement
+      const wobbleBreath = Math.sin(clock.elapsedTime * animation.breatheSpeed * 0.7) * 0.15
+      materialRef.current.factor = animation.wobbleFactor + wobbleBreath
 
       // Smooth color transition
       materialRef.current.color.lerp(color, 0.05)
@@ -141,14 +133,14 @@ function AnimatedBubble({ state, tiltX, tiltY }: AnimatedBubbleProps) {
   })
 
   return (
-    <Sphere ref={meshRef} args={[1, 64, 64]} scale={0.9}>
+    <Sphere ref={meshRef} args={[1, 64, 64]} scale={baseScale}>
       <MeshWobbleMaterial
         ref={materialRef}
         color={getStateColor(state)}
         factor={animation.wobbleFactor}
         speed={animation.wobbleSpeed}
-        roughness={0.2}
-        metalness={0.1}
+        roughness={0.3}
+        metalness={0.05}
       />
     </Sphere>
   )
@@ -191,7 +183,7 @@ function Eye({ position, isBlinking, openness, tiltX, tiltY, expressionMod }: Ey
 
   return (
     <Billboard position={position}>
-      <group ref={groupRef} scale={[0.8, 0.8, 0.8]}>
+      <group ref={groupRef} scale={[0.5, 0.5, 0.5]}>
         {/* Eye white */}
         <mesh>
           <circleGeometry args={[0.14, 32]} />
@@ -234,8 +226,8 @@ function Mouth({ state, expressionMod }: MouthProps) {
   const isSmiling = curve > 0
 
   return (
-    <Billboard position={[0, -0.15, 0.92]}>
-      <group scale={[0.7, 0.7, 0.7]}>
+    <Billboard position={[0, -0.08, 0.58]}>
+      <group scale={[0.4, 0.4, 0.4]}>
         {isSmiling ? (
           // Smile - arc facing down
           <mesh rotation={[0, 0, Math.PI]}>
@@ -257,6 +249,68 @@ function Mouth({ state, expressionMod }: MouthProps) {
         )}
       </group>
     </Billboard>
+  )
+}
+
+// Cartoon glove hand component (Kilroy style)
+interface HandProps {
+  side: 'left' | 'right'
+  tiltX: number
+}
+
+function CartoonHand({ side, tiltX }: HandProps) {
+  const groupRef = useRef<THREE.Group>(null)
+  const isLeft = side === 'left'
+  const xPos = isLeft ? -0.4 : 0.4
+
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      // Subtle idle animation - fingers wiggle slightly
+      const wiggle = Math.sin(clock.elapsedTime * 2 + (isLeft ? 0 : Math.PI)) * 0.02
+      groupRef.current.rotation.z = (isLeft ? 0.3 : -0.3) + wiggle
+
+      // React to tilt - hands grip tighter or looser
+      const tiltEffect = tiltX * (isLeft ? 0.08 : -0.08)
+      groupRef.current.position.x = xPos + tiltEffect
+    }
+  })
+
+  return (
+    <group ref={groupRef} position={[xPos, -0.48, 0.25]} rotation={[0.2, isLeft ? 0.3 : -0.3, isLeft ? 0.3 : -0.3]} scale={0.8}>
+      {/* Palm */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.12, 16, 16]} />
+        <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
+      </mesh>
+
+      {/* Fingers - 4 fingers gripping */}
+      {[0, 1, 2, 3].map((i) => {
+        const fingerAngle = (i - 1.5) * 0.25
+        const fingerLength = i === 1 || i === 2 ? 0.14 : 0.11 // Middle fingers longer
+        return (
+          <group key={i} position={[Math.sin(fingerAngle) * 0.1, 0.08, Math.cos(fingerAngle) * 0.05]} rotation={[0.8, fingerAngle, 0]}>
+            {/* Finger base */}
+            <mesh position={[0, fingerLength / 2, 0]}>
+              <capsuleGeometry args={[0.035, fingerLength, 8, 8]} />
+              <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
+            </mesh>
+            {/* Finger tip - curled over edge */}
+            <mesh position={[0, fingerLength + 0.03, -0.03]} rotation={[0.6, 0, 0]}>
+              <sphereGeometry args={[0.035, 8, 8]} />
+              <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
+            </mesh>
+          </group>
+        )
+      })}
+
+      {/* Thumb */}
+      <group position={[isLeft ? 0.08 : -0.08, -0.02, 0.08]} rotation={[0.3, isLeft ? -0.5 : 0.5, isLeft ? -0.3 : 0.3]}>
+        <mesh position={[0, 0.04, 0]}>
+          <capsuleGeometry args={[0.04, 0.08, 8, 8]} />
+          <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
+        </mesh>
+      </group>
+    </group>
   )
 }
 
@@ -285,9 +339,9 @@ function BubbleFace({ state, expression, tiltX, tiltY }: BubbleFaceProps) {
     return () => clearInterval(blinkInterval)
   }, [state])
 
-  const eyeY = 0.08
-  const eyeZ = 0.92
-  const eyeSpacing = 0.2
+  const eyeY = 0.04
+  const eyeZ = 0.58
+  const eyeSpacing = 0.12
 
   return (
     <group>
@@ -315,6 +369,30 @@ function BubbleFace({ state, expression, tiltX, tiltY }: BubbleFaceProps) {
   )
 }
 
+// Animated group that moves everything together based on tilt
+function TiltGroup({ children, tiltX, tiltY }: { children: React.ReactNode; tiltX: number; tiltY: number }) {
+  const groupRef = useRef<THREE.Group>(null)
+
+  useFrame(() => {
+    if (groupRef.current) {
+      // Smooth position based on tilt
+      const targetX = tiltX * 0.2
+      const targetY = tiltY * 0.1
+      groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.05)
+      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, 0.65 + targetY, 0.05)
+
+      // Subtle rotation based on tilt
+      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, -tiltX * 0.08, 0.05)
+    }
+  })
+
+  return (
+    <group ref={groupRef} position={[0, 0.65, 0]}>
+      {children}
+    </group>
+  )
+}
+
 // Scene component that handles tilt
 function BubbleScene({ state, expression }: { state: BubbleState; expression?: BubbleExpression }) {
   const { orientation } = useDeviceOrientation()
@@ -331,12 +409,11 @@ function BubbleScene({ state, expression }: { state: BubbleState; expression?: B
       <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
       <directionalLight position={[-3, 2, 4]} intensity={0.4} color="#6366F1" />
 
+      {/* Main group - moves everything together based on tilt */}
+      <TiltGroup tiltX={tiltX} tiltY={tiltY}>
+
       {/* Main bubble */}
-      <AnimatedBubble
-        state={state}
-        tiltX={tiltX}
-        tiltY={tiltY}
-      />
+      <AnimatedBubble state={state} />
 
       {/* Face */}
       <BubbleFace
@@ -345,6 +422,12 @@ function BubbleScene({ state, expression }: { state: BubbleState; expression?: B
         tiltX={tiltX}
         tiltY={tiltY}
       />
+
+      {/* Cartoon hands (Kilroy style) */}
+      <CartoonHand side="left" tiltX={0} />
+      <CartoonHand side="right" tiltX={0} />
+
+      </TiltGroup>
     </>
   )
 }
@@ -366,7 +449,7 @@ export function BalanceBubble3D({
   className = '',
   onClick,
 }: BalanceBubble3DProps) {
-  const cameraZ = size === 'small' ? 3 : size === 'medium' ? 2.8 : 2.5
+  const cameraZ = size === 'small' ? 3.5 : size === 'medium' ? 3.2 : 3.2
 
   return (
     <div

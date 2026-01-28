@@ -1089,8 +1089,8 @@ body {
 
 /* Bubble area - for 3D canvas */
 .habitat-bubble-area {
-  height: 180px;
-  min-height: 180px;
+  height: 280px;
+  min-height: 280px;
   width: 100%;
   position: relative;
   flex-shrink: 0;
@@ -1146,9 +1146,7 @@ body {
   background: var(--color-bg-dark);
   padding: var(--space-sm) var(--space-md);
   padding-top: var(--safe-area-top);
-  /* Fixed dimensions to prevent layout shift */
   width: 100%;
-  min-height: 360px;
 }
 
 .sticky-header-content {
