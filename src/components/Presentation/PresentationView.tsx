@@ -5,7 +5,7 @@ import { IPhoneMockup } from './IPhoneMockup'
 import { BalanceBubble3D } from '../BalanceBubble3D'
 import { PixelLogo } from '../PixelLogo'
 import { MOOD_TO_BUBBLE_STATE } from '../../gameState'
-import type { BubbleMood } from '../../gameState'
+import type { BubbleMood, BubbleState } from '../../gameState'
 
 // Slide data with bubble comments
 const SLIDES = [
