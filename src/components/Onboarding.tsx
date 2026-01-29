@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Smartphone, Coffee, Moon, Heart, Activity, CheckSquare, Sparkles, Check } from 'lucide-react'
+import { Smartphone, Coffee, Moon, Heart, Activity, CheckSquare, Check } from 'lucide-react'
 import type { Habit } from '../gameState'
 import { HABIT_LABELS } from '../gameState'
+import { PixelLogo } from './PixelLogo'
 
 // Map habits to Lucide icons
 const HABIT_ICON_COMPONENTS: Record<Habit, React.ReactNode> = {
@@ -21,51 +22,14 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
   return (
     <div className="flex-col flex-center p-lg text-center" style={{ minHeight: '100%', position: 'relative', zIndex: 10 }}>
-      {/* Floating sparkles */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.4 }}
-        transition={{ delay: 0.5 }}
-        style={{
-          position: 'absolute',
-          top: '15%',
-          left: '20%',
-          color: 'var(--color-primary-light)',
-        }}
-      >
-        <Sparkles size={24} />
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.3 }}
-        transition={{ delay: 0.7 }}
-        style={{
-          position: 'absolute',
-          top: '25%',
-          right: '15%',
-          color: 'var(--color-primary-light)',
-        }}
-      >
-        <Sparkles size={18} />
-      </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 20 }}
       >
-        <h1
-          className="text-gradient"
-          style={{
-            fontSize: 'clamp(2.5rem, 8vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: 'var(--space-xl)',
-            textShadow: '0 4px 30px rgba(99, 102, 241, 0.3)',
-            letterSpacing: '-0.02em',
-          }}
-        >
-          Balance Quest
-        </h1>
+        <div style={{ marginTop: 'calc(var(--safe-area-top, 0px) + 76px)', marginBottom: '40px' }}>
+          <PixelLogo blockSize={6} gap={1} delay={0.3} showBubble={false} align="left" />
+        </div>
       </motion.div>
 
       <motion.div

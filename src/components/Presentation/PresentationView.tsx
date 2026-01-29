@@ -2,99 +2,17 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { IPhoneMockup } from './IPhoneMockup'
-import { BalanceBubble } from '../BalanceBubble'
-import type { BubbleState } from '../../gameState'
-
-// Icons as simple SVG components
-const Icons = {
-  graduation: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-      <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
-    </svg>
-  ),
-  phone: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-      <line x1="12" y1="18" x2="12.01" y2="18"/>
-    </svg>
-  ),
-  brain: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
-      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
-    </svg>
-  ),
-  chart: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 3v18h18"/>
-      <path d="M18 17V9"/>
-      <path d="M13 17V5"/>
-      <path d="M8 17v-3"/>
-    </svg>
-  ),
-  gamepad: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="6" y1="12" x2="10" y2="12"/>
-      <line x1="8" y1="10" x2="8" y2="14"/>
-      <circle cx="15" cy="13" r="1"/>
-      <circle cx="18" cy="11" r="1"/>
-      <rect x="2" y="6" width="20" height="12" rx="2"/>
-    </svg>
-  ),
-  heart: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-    </svg>
-  ),
-  target: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"/>
-      <circle cx="12" cy="12" r="6"/>
-      <circle cx="12" cy="12" r="2"/>
-    </svg>
-  ),
-  bubble: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"/>
-      <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-      <line x1="9" y1="9" x2="9.01" y2="9"/>
-      <line x1="15" y1="9" x2="15.01" y2="9"/>
-    </svg>
-  ),
-  sparkles: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-      <path d="M5 3v4"/>
-      <path d="M3 5h4"/>
-      <path d="M19 17v4"/>
-      <path d="M17 19h4"/>
-    </svg>
-  ),
-  lightbulb: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
-      <path d="M9 18h6"/>
-      <path d="M10 22h4"/>
-    </svg>
-  ),
-}
-
-// Map mood to BubbleState
-const moodToBubbleState: Record<string, BubbleState> = {
-  happy: 'energetic',
-  thinking: 'attention',
-  neutral: 'content',
-  proud: 'energetic',
-  excited: 'energetic',
-  worried: 'tired',
-}
+import { BalanceBubble3D } from '../BalanceBubble3D'
+import { PixelLogo } from '../PixelLogo'
+import { MOOD_TO_BUBBLE_STATE } from '../../gameState'
+import type { BubbleMood } from '../../gameState'
 
 // Slide data with bubble comments
 const SLIDES = [
   {
     id: 'intro',
-    title: 'Balance Quest',
+    pixelLogo: true,
+    title: '',
     subtitle: 'Meesterproef Mio van Leenen',
     content: 'Wat is de impact van gamification op het volhouden van gezonde gewoontes en hoe komen deze tot uiting in een zelfontwikkelde app?',
     icon: 'graduation',
@@ -250,30 +168,31 @@ function PresentationBubble({
   comment: string
   showComment: boolean
 }) {
-  const bubbleState = moodToBubbleState[mood] || 'content'
+  const bubbleState = MOOD_TO_BUBBLE_STATE[mood as BubbleMood] || 'content'
 
   return (
     <div
       style={{
         display: 'flex',
-        alignItems: 'center',
-        gap: '20px',
-        padding: '20px 40px',
+        alignItems: 'flex-start',
+        gap: '0px',
+        padding: '10px 20px',
         background: 'transparent',
       }}
     >
-      {/* The real 3D bubble - always visible, 2x bigger */}
-      <div style={{ width: '120px', height: '120px', flexShrink: 0 }}>
-        <BalanceBubble
-          state={bubbleState}
-          size="small"
-          showParticles={false}
-          showEyes={true}
-        />
+      {/* The 3D bubble */}
+      <div style={{ width: '200px', height: '200px', flexShrink: 0, position: 'relative', marginTop: '50px' }}>
+        <div style={{ position: 'absolute', inset: '-30px' }}>
+          <BalanceBubble3D
+            state={bubbleState}
+            size="medium"
+            showEyes={true}
+          />
+        </div>
       </div>
 
-      {/* Speech bubble - animates in/out */}
-      <div style={{ flex: 1, minHeight: '44px', display: 'flex', alignItems: 'center' }}>
+      {/* Speech bubble - animates in/out, positioned near bubble's mouth */}
+      <div style={{ flex: 1, minHeight: '44px', display: 'flex', alignItems: 'flex-start', marginTop: '20px' }}>
         <AnimatePresence mode="wait">
           {showComment && (
             <motion.div
@@ -314,6 +233,30 @@ export function PresentationView() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [progress, setProgress] = useState(0)
   const [showBubbleComment, setShowBubbleComment] = useState(false)
+  const [showBubble, setShowBubble] = useState(false)
+
+  const isFirstSlide = currentSlide === 0
+  const isLastSlide = currentSlide === SLIDES.length - 1
+
+  // Bubble visibility: fade in halfway through slide 1, fade out on last slide
+  useEffect(() => {
+    if (isFirstSlide) {
+      setShowBubble(false)
+      const slideDuration = (SLIDES[0] as any).duration || SLIDE_DURATION
+      const fadeInTimer = setTimeout(() => {
+        setShowBubble(true)
+      }, slideDuration / 2)
+      return () => clearTimeout(fadeInTimer)
+    } else if (isLastSlide) {
+      // Fade out after a moment on last slide
+      const fadeOutTimer = setTimeout(() => {
+        setShowBubble(false)
+      }, 3000)
+      return () => clearTimeout(fadeOutTimer)
+    } else {
+      setShowBubble(true)
+    }
+  }, [currentSlide, isFirstSlide, isLastSlide])
 
   // Animation sequence: slide content first, then bubble reacts
   useEffect(() => {
@@ -348,7 +291,8 @@ export function PresentationView() {
       clearInterval(progressInterval)
     }
   }, [currentSlide])
-  const IconComponent = Icons[slide.icon as keyof typeof Icons]
+
+  const isLogoSlide = !!(slide as any).pixelLogo
 
   return (
     <div
@@ -368,12 +312,33 @@ export function PresentationView() {
           minWidth: 0,
         }}
       >
-        {/* Bubble presenter at TOP - always visible, comment appears after slide */}
-        <PresentationBubble
-          mood={slide.bubbleMood || 'happy'}
-          comment={slide.bubbleComment || ''}
-          showComment={showBubbleComment}
-        />
+        {/* Bubble presenter at TOP - reserves space only when bubble is visible */}
+        <div style={{ position: 'relative', overflow: 'hidden', transition: 'max-height 0.8s ease', maxHeight: showBubble ? '300px' : '0px' }}>
+          <div style={{ visibility: 'hidden' }}>
+            <PresentationBubble
+              mood={slide.bubbleMood || 'happy'}
+              comment={slide.bubbleComment || ''}
+              showComment={false}
+            />
+          </div>
+          <AnimatePresence>
+            {showBubble && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                style={{ position: 'absolute', top: 0, left: 0, right: 0 }}
+              >
+                <PresentationBubble
+                  mood={slide.bubbleMood || 'happy'}
+                  comment={slide.bubbleComment || ''}
+                  showComment={showBubbleComment}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Slide content */}
         <div
@@ -397,31 +362,24 @@ export function PresentationView() {
                 width: '100%',
               }}
             >
-              {/* Icon */}
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.1, type: 'spring' }}
-                style={{
-                  marginBottom: '16px',
-                  color: '#E8784A',
-                }}
-              >
-                {IconComponent}
-              </motion.div>
-
-              {/* Title */}
-              <h1
-                style={{
-                  fontSize: 'clamp(36px, 5vw, 52px)',
-                  fontWeight: 800,
-                  color: '#F5F0E8',
-                  margin: '0 0 8px 0',
-                  lineHeight: 1.1,
-                }}
-              >
-                {slide.title}
-              </h1>
+              {/* Title - pixel logo or text */}
+              {isLogoSlide ? (
+                <div style={{ marginBottom: '8px' }}>
+                  <PixelLogo blockSize={10} gap={2} delay={0.3} showBubble={false} align="left" />
+                </div>
+              ) : (
+                <h1
+                  style={{
+                    fontSize: 'clamp(36px, 5vw, 52px)',
+                    fontWeight: 800,
+                    color: '#F5F0E8',
+                    margin: '0 0 8px 0',
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {slide.title}
+                </h1>
+              )}
 
               {/* Subtitle */}
               <h2

@@ -3,6 +3,18 @@
 // Enhanced bubble states for more nuanced feedback
 export type BubbleState = 'energetic' | 'content' | 'attention' | 'tired' | 'outOfBalance'
 
+// Friendly mood names that map to BubbleState (for presentation/content use)
+export type BubbleMood = 'happy' | 'thinking' | 'neutral' | 'proud' | 'excited' | 'worried'
+
+export const MOOD_TO_BUBBLE_STATE: Record<BubbleMood, BubbleState> = {
+  happy: 'energetic',
+  thinking: 'attention',
+  neutral: 'content',
+  proud: 'energetic',
+  excited: 'energetic',
+  worried: 'tired',
+}
+
 // Legacy 3-color mapping for backward compatibility
 export type BubbleColor = 'green' | 'orange' | 'red'
 

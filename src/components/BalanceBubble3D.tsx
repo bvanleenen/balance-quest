@@ -26,19 +26,22 @@ function getStateAnimation(state: BubbleState) {
   }
 }
 
+// Mouth shape types for expression overrides
+type MouthShape = 'default' | 'o' | 'wide-smile'
+
 // Micro-expression modifiers
 function getExpressionModifiers(expression?: BubbleExpression) {
   switch (expression) {
     case 'curious':
-      return { eyeScale: 1.15, eyeTilt: 0.1, mouthCurve: 0.02 }
+      return { eyeScale: 1.15, eyeTilt: 0.1, mouthCurve: 0.02, mouthShape: 'o' as MouthShape }
     case 'concerned':
-      return { eyeScale: 1.0, eyeTilt: -0.08, mouthCurve: -0.03 }
+      return { eyeScale: 1.0, eyeTilt: -0.08, mouthCurve: -0.03, mouthShape: 'default' as MouthShape }
     case 'supportive':
-      return { eyeScale: 1.05, eyeTilt: 0, mouthCurve: 0.04 }
+      return { eyeScale: 1.05, eyeTilt: 0, mouthCurve: 0.04, mouthShape: 'default' as MouthShape }
     case 'celebratory':
-      return { eyeScale: 1.2, eyeTilt: 0.05, mouthCurve: 0.08 }
+      return { eyeScale: 1.2, eyeTilt: 0.05, mouthCurve: 0.08, mouthShape: 'wide-smile' as MouthShape }
     default:
-      return { eyeScale: 1.0, eyeTilt: 0, mouthCurve: 0 }
+      return { eyeScale: 1.0, eyeTilt: 0, mouthCurve: 0, mouthShape: 'default' as MouthShape }
   }
 }
 
@@ -223,36 +226,115 @@ function Mouth({ state, expressionMod }: MouthProps) {
   }
 
   const curve = getBaseCurve() + expressionMod.mouthCurve
-  const isSmiling = curve > 0
+  const shape = expressionMod.mouthShape ?? 'default'
+
+  // Render the appropriate mouth shape
+  const renderMouth = () => {
+    // Expression-forced shapes take priority
+    if (shape === 'o') {
+      // "O" mouth — small surprised/curious circle
+      return (
+        <mesh>
+          <ringGeometry args={[0.03, 0.065, 32]} />
+          <meshBasicMaterial color="#1E293B" />
+        </mesh>
+      )
+    }
+
+    if (shape === 'wide-smile') {
+      // Wide celebratory smile — open mouth (filled arc + teeth hint)
+      return (
+        <group>
+          {/* Wide smile arc */}
+          <mesh rotation={[0, 0, Math.PI]}>
+            <ringGeometry args={[0.1, 0.14, 32, 1, 0, Math.PI * 0.9]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
+          {/* Inner fill for open-mouth effect */}
+          <mesh rotation={[0, 0, Math.PI]} position={[0, 0, -0.001]}>
+            <circleGeometry args={[0.1, 32, 0, Math.PI * 0.9]} />
+            <meshBasicMaterial color="#334155" />
+          </mesh>
+        </group>
+      )
+    }
+
+    // Default: curve-based mouth shapes
+    if (curve > 0.10) {
+      // Open mouth (very happy) — ellipse shape
+      return (
+        <group>
+          <mesh rotation={[0, 0, Math.PI]} position={[0, 0.02, 0]}>
+            <ringGeometry args={[0.06, 0.10, 32, 1, 0, Math.PI * 0.85]} />
+            <meshBasicMaterial color="#1E293B" />
+          </mesh>
+          <mesh rotation={[0, 0, Math.PI]} position={[0, 0.02, -0.001]}>
+            <circleGeometry args={[0.06, 32, 0, Math.PI * 0.85]} />
+            <meshBasicMaterial color="#334155" />
+          </mesh>
+        </group>
+      )
+    }
+
+    if (curve > 0.08) {
+      // Big smile — wider arc
+      return (
+        <mesh rotation={[0, 0, Math.PI]}>
+          <ringGeometry args={[0.09, 0.13, 32, 1, 0, Math.PI * 0.85]} />
+          <meshBasicMaterial color="#1E293B" />
+        </mesh>
+      )
+    }
+
+    if (curve > 0.01) {
+      // Small smile — original smile arc
+      return (
+        <mesh rotation={[0, 0, Math.PI]}>
+          <ringGeometry args={[0.08, 0.12, 32, 1, 0, Math.PI * (0.5 + curve * 5)]} />
+          <meshBasicMaterial color="#1E293B" />
+        </mesh>
+      )
+    }
+
+    if (curve < -0.04) {
+      // Big frown — wider, more pronounced
+      return (
+        <mesh>
+          <ringGeometry args={[0.08, 0.11, 32, 1, Math.PI * 0.1, Math.PI * 0.8]} />
+          <meshBasicMaterial color="#1E293B" />
+        </mesh>
+      )
+    }
+
+    if (curve < -0.02) {
+      // Small frown — original frown arc
+      return (
+        <mesh>
+          <ringGeometry args={[0.06, 0.09, 32, 1, Math.PI * 0.15, Math.PI * 0.7]} />
+          <meshBasicMaterial color="#1E293B" />
+        </mesh>
+      )
+    }
+
+    // Neutral — flat line
+    return (
+      <mesh>
+        <planeGeometry args={[0.15, 0.025]} />
+        <meshBasicMaterial color="#1E293B" />
+      </mesh>
+    )
+  }
 
   return (
-    <Billboard position={[0, -0.08, 0.58]}>
+    <Billboard position={[0, -0.15, 0.58]}>
       <group scale={[0.4, 0.4, 0.4]}>
-        {isSmiling ? (
-          // Smile - arc facing down
-          <mesh rotation={[0, 0, Math.PI]}>
-            <ringGeometry args={[0.08, 0.12, 32, 1, 0, Math.PI * (0.5 + curve * 5)]} />
-            <meshBasicMaterial color="#1E293B" />
-          </mesh>
-        ) : curve < -0.02 ? (
-          // Frown - arc facing up
-          <mesh>
-            <ringGeometry args={[0.06, 0.09, 32, 1, Math.PI * 0.15, Math.PI * 0.7]} />
-            <meshBasicMaterial color="#1E293B" />
-          </mesh>
-        ) : (
-          // Neutral - straight line
-          <mesh>
-            <planeGeometry args={[0.15, 0.025]} />
-            <meshBasicMaterial color="#1E293B" />
-          </mesh>
-        )}
+        {renderMouth()}
       </group>
     </Billboard>
   )
 }
 
-// Cartoon glove hand component (Kilroy style)
+// Mickey Mouse-style glove hand component
 interface HandProps {
   side: 'left' | 'right'
   tiltX: number
@@ -261,55 +343,94 @@ interface HandProps {
 function CartoonHand({ side, tiltX }: HandProps) {
   const groupRef = useRef<THREE.Group>(null)
   const isLeft = side === 'left'
-  const xPos = isLeft ? -0.4 : 0.4
+  const xPos = isLeft ? -0.52 : 0.52
+  const mirror = isLeft ? -1 : 1
 
   useFrame(({ clock }) => {
     if (groupRef.current) {
-      // Subtle idle animation - fingers wiggle slightly
-      const wiggle = Math.sin(clock.elapsedTime * 2 + (isLeft ? 0 : Math.PI)) * 0.02
-      groupRef.current.rotation.z = (isLeft ? 0.3 : -0.3) + wiggle
+      const t = clock.elapsedTime
+      const phase = isLeft ? 0 : Math.PI
 
-      // React to tilt - hands grip tighter or looser
-      const tiltEffect = tiltX * (isLeft ? 0.08 : -0.08)
+      // Organic idle movement: gentle sway + small bounce
+      const sway = Math.sin(t * 1.2 + phase) * 0.08
+      const bounce = Math.sin(t * 2.0 + phase) * 0.015
+      const tiltWiggle = Math.sin(t * 0.8 + phase) * 0.04
+
+      // Base rotation: hands angled outward and down from bubble
+      const baseZ = isLeft ? -0.6 : 0.6
+      groupRef.current.rotation.z = baseZ + sway
+      groupRef.current.rotation.x = -0.3 + tiltWiggle
+      groupRef.current.position.y = -0.35 + bounce
+
+      // React to tilt/mouse
+      const tiltEffect = tiltX * (isLeft ? 0.05 : -0.05)
       groupRef.current.position.x = xPos + tiltEffect
     }
   })
 
+  // Fingers fan downward/outward from the palm
+  const fingers = [
+    { x: -0.055, y: -0.1, angle: -0.2, length: 0.09 },   // Index
+    { x: -0.02, y: -0.12, angle: -0.06, length: 0.10 },   // Middle
+    { x: 0.02, y: -0.12, angle: 0.06, length: 0.10 },     // Ring
+    { x: 0.055, y: -0.1, angle: 0.2, length: 0.09 },      // Pinky
+  ]
+
   return (
-    <group ref={groupRef} position={[xPos, -0.48, 0.25]} rotation={[0.2, isLeft ? 0.3 : -0.3, isLeft ? 0.3 : -0.3]} scale={0.8}>
-      {/* Palm */}
-      <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
+    <group
+      ref={groupRef}
+      position={[xPos, -0.35, 0.25]}
+      rotation={[0, isLeft ? 0.5 : -0.5, 0]}
+      scale={0.8}
+    >
+      {/* Wrist cuff — at the top, connecting to bubble */}
+      <mesh position={[0, 0.12, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.065, 0.025, 12, 24]} />
+        <meshStandardMaterial color="#F1F5F9" roughness={0.3} />
       </mesh>
 
-      {/* Fingers - 4 fingers gripping */}
-      {[0, 1, 2, 3].map((i) => {
-        const fingerAngle = (i - 1.5) * 0.25
-        const fingerLength = i === 1 || i === 2 ? 0.14 : 0.11 // Middle fingers longer
-        return (
-          <group key={i} position={[Math.sin(fingerAngle) * 0.1, 0.08, Math.cos(fingerAngle) * 0.05]} rotation={[0.8, fingerAngle, 0]}>
-            {/* Finger base */}
-            <mesh position={[0, fingerLength / 2, 0]}>
-              <capsuleGeometry args={[0.035, fingerLength, 8, 8]} />
-              <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
-            </mesh>
-            {/* Finger tip - curled over edge */}
-            <mesh position={[0, fingerLength + 0.03, -0.03]} rotation={[0.6, 0, 0]}>
-              <sphereGeometry args={[0.035, 8, 8]} />
-              <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
-            </mesh>
-          </group>
-        )
-      })}
+      {/* Palm — big puffy sphere */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.14, 24, 24]} />
+        <meshStandardMaterial color="#FAFAFA" roughness={0.35} />
+      </mesh>
 
-      {/* Thumb */}
-      <group position={[isLeft ? 0.08 : -0.08, -0.02, 0.08]} rotation={[0.3, isLeft ? -0.5 : 0.5, isLeft ? -0.3 : 0.3]}>
-        <mesh position={[0, 0.04, 0]}>
-          <capsuleGeometry args={[0.04, 0.08, 8, 8]} />
-          <meshStandardMaterial color="#FAFAFA" roughness={0.3} />
+      {/* Four spread fingers — pointing downward */}
+      {fingers.map((f, i) => (
+        <group key={i} position={[f.x * mirror, f.y, 0]} rotation={[0, 0, f.angle * mirror]}>
+          <mesh position={[0, -f.length / 2, 0]}>
+            <capsuleGeometry args={[0.036, f.length, 8, 8]} />
+            <meshStandardMaterial color="#FAFAFA" roughness={0.35} />
+          </mesh>
+          <mesh position={[0, -(f.length + 0.02), 0]}>
+            <sphereGeometry args={[0.036, 12, 12]} />
+            <meshStandardMaterial color="#FAFAFA" roughness={0.35} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Thumb — separated from palm, pointing inward */}
+      <group
+        position={[mirror * -0.18, 0.0, 0.06]}
+        rotation={[0, 0, mirror * 1.2]}
+      >
+        <mesh position={[0, -0.05, 0]}>
+          <capsuleGeometry args={[0.042, 0.1, 8, 8]} />
+          <meshStandardMaterial color="#FAFAFA" roughness={0.35} />
+        </mesh>
+        <mesh position={[0, -0.11, 0]}>
+          <sphereGeometry args={[0.042, 12, 12]} />
+          <meshStandardMaterial color="#FAFAFA" roughness={0.35} />
         </mesh>
       </group>
+
+      {/* Three dark lines on back of hand */}
+      {[-0.025, 0, 0.025].map((offset, i) => (
+        <mesh key={`line-${i}`} position={[offset * mirror, -0.01, 0.14]} rotation={[0, 0, 0]}>
+          <planeGeometry args={[0.007, 0.09]} />
+          <meshBasicMaterial color="#94A3B8" side={THREE.DoubleSide} />
+        </mesh>
+      ))}
     </group>
   )
 }
