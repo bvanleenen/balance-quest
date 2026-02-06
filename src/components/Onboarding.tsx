@@ -319,7 +319,7 @@ export function BubbleIntroScreen({ playerName, onContinue }: BubbleIntroProps) 
           position: 'relative',
         }}
       >
-        <BalanceBubble3D state="energetic" size="full" expression="happy" />
+        <BalanceBubble3D state="energetic" size="full" expression="celebratory" />
       </motion.div>
 
       <motion.h2
