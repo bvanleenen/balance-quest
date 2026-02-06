@@ -24,9 +24,10 @@ interface BubbleHabitatProps {
   earnedBadges: string[]
   expression?: BubbleExpression
   onBubbleClick?: () => void
+  isGiggling?: boolean
 }
 
-export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, onBubbleClick }: BubbleHabitatProps) {
+export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, onBubbleClick, isGiggling }: BubbleHabitatProps) {
   // Get badge info for earned badges (max 3 shown in header)
   const displayBadges = earnedBadges.slice(-3).map(id => BADGES[id as keyof typeof BADGES]).filter(Boolean)
 
@@ -90,6 +91,7 @@ export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, o
             size="full"
             expression={expression}
             onClick={onBubbleClick}
+            isGiggling={isGiggling}
           />
         </div>
       </div>

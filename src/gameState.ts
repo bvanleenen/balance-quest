@@ -144,7 +144,7 @@ export const initialGameState: GameState = {
   choices: [],
   points: 0,
   badges: [],
-  bubbleScore: 5, // Start at content
+  bubbleScore: 6, // Start solidly in content
   timeOfDay: 'afternoon',
   dayProgress: 0,
   filteredScenes: [],

@@ -16,6 +16,7 @@ interface SceneViewProps {
   day?: 1 | 2 | 3
   onChoice: (choice: Choice) => void
   onBubbleClick?: () => void
+  isGiggling?: boolean
 }
 
 const DAY_LABELS: Record<1 | 2 | 3, string> = {
@@ -24,7 +25,7 @@ const DAY_LABELS: Record<1 | 2 | 3, string> = {
   3: 'Dag 3 • Weekend',
 }
 
-export function SceneView({ scene, playerName, bubbleState, points, earnedBadges, progress, day, onChoice, onBubbleClick }: SceneViewProps) {
+export function SceneView({ scene, playerName, bubbleState, points, earnedBadges, progress, day, onChoice, onBubbleClick, isGiggling }: SceneViewProps) {
   const [phase, setPhase] = useState<'intro' | 'text' | 'choices'>('intro')
   const [visibleLines, setVisibleLines] = useState(0)
   const [hoveredChoice, setHoveredChoice] = useState<string | null>(null)
@@ -112,6 +113,7 @@ export function SceneView({ scene, playerName, bubbleState, points, earnedBadges
             earnedBadges={earnedBadges}
             expression={getBubbleExpression()}
             onBubbleClick={onBubbleClick}
+            isGiggling={isGiggling}
           />
         </div>
       </div>

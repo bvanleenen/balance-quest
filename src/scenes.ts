@@ -21,8 +21,8 @@ export const SCENES: Scene[] = [
         label: 'Vriend bellen',
         subtext: 'Hij klinkt serieus. School kan wachten.',
         category: 'social',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
       {
         id: 'eerst-leren',
@@ -87,23 +87,23 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zag een paar grappige dingen. Was wel ontspannend.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
       {
         id: 'gemengd',
         label: '🤔 Gemengd',
         subtext: 'Sommige content was leuk, maar ik zocht eigenlijk iets anders.',
         category: 'rest',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
       {
         id: 'leeg',
         label: '😔 Een beetje leeg',
         subtext: 'Ik weet niet eens meer wat ik zag. De tijd is gewoon... weg.',
         category: 'rest',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
     ],
     bqResponses: {
@@ -155,8 +155,8 @@ export const SCENES: Scene[] = [
         label: 'Afmelden - te moe',
         subtext: 'Ik luister naar mijn lichaam. Vandaag even niet.',
         category: 'rest',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
       {
         id: 'zelf-trainen',
@@ -207,15 +207,15 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zet een timer en werk door, ook al wordt het niet mijn beste sessie.',
         category: 'work',
         points: 10,
-        bubbleEffect: -1,
+        bubbleEffect: 0,
       },
       {
         id: 'morgenochtend',
         label: 'Morgenochtend vroeg',
         subtext: 'Als ik nu forceer, blijft het niet hangen. Ik zet mijn wekker vroeger.',
         category: 'rest',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
       {
         id: 'nog-30-min',
@@ -223,7 +223,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik geef het nog een half uur. Als het dan niet lukt, ga ik slapen.',
         category: 'work',
         points: 10,
-        bubbleEffect: 1,
+        bubbleEffect: 2,
       },
     ],
     bqResponses: {
@@ -289,8 +289,8 @@ export const SCENES: Scene[] = [
         label: 'Nog 15 minuten, dan echt stoppen',
         subtext: 'Ik zet een timer. Om 23:30 gaat de telefoon weg.',
         category: 'scroll',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
     ],
     bqResponses: {
@@ -353,7 +353,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik heb er zelf voor gewerkt. Ze hadden eerder moeten beginnen.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: 0,
       },
     ],
     bqResponses: {
@@ -393,7 +393,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik had [X], maar ik weet niet zeker of het klopt.',
         category: 'social',
         points: 5,
-        bubbleEffect: -1,
+        bubbleEffect: 0,
       },
       {
         id: 'niet-meedoen',
@@ -401,7 +401,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik wil het niet weten. Wat gedaan is, is gedaan.',
         category: 'rest',
         points: 10,
-        bubbleEffect: 1,
+        bubbleEffect: 2,
       },
       {
         id: 'luisteren',
@@ -447,7 +447,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik bemoei me er niet mee. Het gaat vanzelf over.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
       {
         id: 'uitspreken',
@@ -463,7 +463,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zeg nu niks, maar ik app straks iemand dat ik het niet oké vond.',
         category: 'social',
         points: 5,
-        bubbleEffect: -1,
+        bubbleEffect: 0,
       },
       {
         id: 'weglopen',
@@ -525,8 +525,8 @@ export const SCENES: Scene[] = [
         label: 'Naar het feestje',
         subtext: 'Het is vrijdag. Ik heb het verdiend. Het huis kan wachten.',
         category: 'social',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
       {
         id: 'thuisblijven',
@@ -542,7 +542,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zeg ja tegen mijn ouders EN ja tegen het feestje. Komt wel goed.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -3,
+        bubbleEffect: -2,
       },
     ],
     bqResponses: {
@@ -600,7 +600,7 @@ export const SCENES: Scene[] = [
         subtext: 'Mijn hoofd is moe. Mijn lichaam kan ook even niks.',
         category: 'rest',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: 0,
       },
       {
         id: 'solo-hardlopen',
@@ -659,7 +659,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik kijk wat ze doen. Gewoon even.',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -3,
+        bubbleEffect: -2,
       },
       {
         id: 'telefoon-weg-film',
@@ -729,7 +729,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik wil weten wat ik gemist heb. Daarna sta ik op.',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
       {
         id: 'direct-opstaan',
@@ -737,7 +737,7 @@ export const SCENES: Scene[] = [
         subtext: 'Nee. Eerst douchen en ontbijten. Berichten lopen niet weg.',
         category: 'rest',
         points: 10,
-        bubbleEffect: 1,
+        bubbleEffect: 2,
       },
       {
         id: 'snooze',
@@ -802,7 +802,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik heb zin in iets intensiefs. Een goede workout om de week te starten.',
         category: 'rest',
         points: 5,
-        bubbleEffect: -1,
+        bubbleEffect: 0,
       },
       {
         id: 'plannen-later',
@@ -810,7 +810,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik beslis straks wel. Eerst even wakker worden.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
     ],
     bqResponses: {
@@ -869,7 +869,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik check af en toe even. Oma merkt het niet.',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
       {
         id: 'met-neef',
@@ -877,7 +877,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik ga naast mijn neef zitten. Dan zijn we samen "afwezig".',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
       {
         id: 'oma-vragen',
@@ -939,8 +939,8 @@ export const SCENES: Scene[] = [
         label: 'Naar het strand, project \'s avonds',
         subtext: 'Ik ga naar het strand. \'s Avonds werk ik door.',
         category: 'social',
-        points: 0,
-        bubbleEffect: -1,
+        points: 5,
+        bubbleEffect: 0,
       },
       {
         id: 'ochtend-middag',
@@ -956,7 +956,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik beslis morgen wel. Nu hoef ik nog niet te kiezen.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
     ],
     bqResponses: {
@@ -1017,7 +1017,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik reageerde vooral, in plaats van te kiezen.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -2,
+        bubbleEffect: -1,
       },
     ],
     bqResponses: {

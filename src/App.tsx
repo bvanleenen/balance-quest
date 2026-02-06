@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GameState, Habit, Choice } from './gameState'
-import { initialGameState, getBubbleState, BADGES, BUBBLE_STATE_INFO, filterScenesForHabits } from './gameState'
+import { initialGameState, getBubbleState, BADGES, filterScenesForHabits } from './gameState'
 import { SCENES } from './scenes'
 import { WelcomeScreen, NameScreen, HabitsScreen, BubbleIntroScreen } from './components/Onboarding'
 import { SceneView } from './components/SceneView'
@@ -40,7 +40,7 @@ function App() {
     points?: number
     badge?: { name: string; icon: string }
   } | null>(null)
-  const [showBubbleStatus, setShowBubbleStatus] = useState(false)
+  const [bubbleGiggle, setBubbleGiggle] = useState<{ message: string; active: boolean } | null>(null)
 
   const bubbleState = getBubbleState(gameState.bubbleScore)
 
@@ -68,11 +68,27 @@ function App() {
     setGameState(s => ({ ...s, phase: 'playing' }))
   }, [])
 
+  const BUBBLE_GIGGLES = [
+    'Hé, dat kietelt! 🫧',
+    'Hihihi!',
+    'Aiii! Voorzichtig!',
+    'Bloop bloop!',
+    '*giechelt*',
+    'Nog een keer!',
+    'Ik word er duizelig van!',
+    'Pssst... neem een pauze 🤫',
+    'Wie is hier de baas? 😏',
+    'Ik ben je bubbel, niet je stressbal!',
+    'Doe dat nog eens!',
+    'Woehoe! 🫧',
+  ]
+
   const handleBubbleClick = useCallback(() => {
-    setShowBubbleStatus(true)
-    // Auto-close after 3 seconds
-    setTimeout(() => setShowBubbleStatus(false), 3000)
-  }, [])
+    if (bubbleGiggle?.active) return // Don't stack giggles
+    const message = BUBBLE_GIGGLES[Math.floor(Math.random() * BUBBLE_GIGGLES.length)]
+    setBubbleGiggle({ message, active: true })
+    setTimeout(() => setBubbleGiggle(null), 2500)
+  }, [bubbleGiggle])
 
   // Use filtered scenes
   const activeScenes = gameState.filteredScenes.length > 0 ? gameState.filteredScenes : SCENES
@@ -202,6 +218,7 @@ function App() {
               day={gameState.currentDay}
               onChoice={handleChoice}
               onBubbleClick={handleBubbleClick}
+              isGiggling={bubbleGiggle?.active}
             />
           )
         } else {
@@ -274,40 +291,49 @@ function App() {
       activeTab={activeTab}
       onTabChange={setActiveTab}
     >
-      {/* Bubble status popup */}
+      {/* Bubble speech bubble easter egg */}
       <AnimatePresence>
-        {showBubbleStatus && (
+        {bubbleGiggle && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -10 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
             style={{
               position: 'fixed',
-              top: 'calc(var(--safe-area-top, 0px) + 320px)',
-              right: 'var(--space-md)',
+              top: 'calc(var(--safe-area-top, 0px) + 60px)',
+              left: '50%',
+              transform: 'translateX(-50%)',
               zIndex: 110,
-              padding: 'var(--space-md)',
-              backgroundColor: 'var(--color-bg-glass)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--color-border-light)',
-              maxWidth: '200px',
+              padding: 'var(--space-sm) var(--space-lg)',
+              background: 'rgba(255, 255, 255, 0.95)',
+              borderRadius: '20px',
+              maxWidth: '240px',
+              textAlign: 'center',
+              pointerEvents: 'none',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: 'var(--space-xs)' }}>
-              <span style={{ color: BUBBLE_STATE_INFO[bubbleState].color, fontSize: '16px' }}>●</span>
-              <span style={{ fontWeight: 600, color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>
-                {BUBBLE_STATE_INFO[bubbleState].label}
-              </span>
-            </div>
             <p style={{
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--color-text-muted)',
+              fontSize: 'var(--font-size-base)',
+              color: '#1E293B',
               margin: 0,
+              fontWeight: 600,
               lineHeight: 1.4,
             }}>
-              {BUBBLE_STATE_INFO[bubbleState].description}
+              {bubbleGiggle.message}
             </p>
+            {/* Speech bubble tail */}
+            <div style={{
+              position: 'absolute',
+              bottom: '-8px',
+              left: '50%',
+              marginLeft: '-8px',
+              width: 0,
+              height: 0,
+              borderLeft: '8px solid transparent',
+              borderRight: '8px solid transparent',
+              borderTop: '8px solid rgba(255, 255, 255, 0.95)',
+            }} />
           </motion.div>
         )}
       </AnimatePresence>

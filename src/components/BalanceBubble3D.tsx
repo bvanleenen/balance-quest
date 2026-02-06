@@ -491,10 +491,11 @@ function BubbleFace({ state, expression, tiltX, tiltY }: BubbleFaceProps) {
 }
 
 // Animated group that moves everything together based on tilt
-function TiltGroup({ children, tiltX, tiltY }: { children: React.ReactNode; tiltX: number; tiltY: number }) {
+function TiltGroup({ children, tiltX, tiltY, isGiggling }: { children: React.ReactNode; tiltX: number; tiltY: number; isGiggling?: boolean }) {
   const groupRef = useRef<THREE.Group>(null)
+  const giggleStartRef = useRef(0)
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (groupRef.current) {
       // Smooth position based on tilt
       const targetX = tiltX * 0.2
@@ -502,8 +503,23 @@ function TiltGroup({ children, tiltX, tiltY }: { children: React.ReactNode; tilt
       groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.05)
       groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, 0.65 + targetY, 0.05)
 
-      // Subtle rotation based on tilt
-      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, -tiltX * 0.08, 0.05)
+      // Giggle wiggle when tapped
+      let giggleRotation = 0
+      let giggleScale = 1
+      if (isGiggling) {
+        if (giggleStartRef.current === 0) giggleStartRef.current = clock.elapsedTime
+        const elapsed = clock.elapsedTime - giggleStartRef.current
+        const intensity = Math.max(0, 1 - elapsed * 1.5) // Decay over ~0.7s
+        giggleRotation = Math.sin(elapsed * 25) * 0.15 * intensity
+        giggleScale = 1 + Math.sin(elapsed * 18) * 0.08 * intensity
+      } else {
+        giggleStartRef.current = 0
+      }
+
+      // Subtle rotation based on tilt + giggle
+      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, -tiltX * 0.08 + giggleRotation, 0.15)
+      const baseScale = 1 * giggleScale
+      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, baseScale, 0.15))
     }
   })
 
@@ -515,7 +531,7 @@ function TiltGroup({ children, tiltX, tiltY }: { children: React.ReactNode; tilt
 }
 
 // Scene component that handles tilt
-function BubbleScene({ state, expression }: { state: BubbleState; expression?: BubbleExpression }) {
+function BubbleScene({ state, expression, isGiggling }: { state: BubbleState; expression?: BubbleExpression; isGiggling?: boolean }) {
   const { orientation } = useDeviceOrientation()
   const mousePos = useMousePosition()
 
@@ -531,7 +547,7 @@ function BubbleScene({ state, expression }: { state: BubbleState; expression?: B
       <directionalLight position={[-3, 2, 4]} intensity={0.4} color="#6366F1" />
 
       {/* Main group - moves everything together based on tilt */}
-      <TiltGroup tiltX={tiltX} tiltY={tiltY}>
+      <TiltGroup tiltX={tiltX} tiltY={tiltY} isGiggling={isGiggling}>
 
       {/* Main bubble */}
       <AnimatedBubble state={state} />
@@ -561,6 +577,7 @@ interface BalanceBubble3DProps {
   showEyes?: boolean
   className?: string
   onClick?: () => void
+  isGiggling?: boolean
 }
 
 export function BalanceBubble3D({
@@ -569,6 +586,7 @@ export function BalanceBubble3D({
   expression,
   className = '',
   onClick,
+  isGiggling,
 }: BalanceBubble3DProps) {
   const cameraZ = size === 'small' ? 3.5 : size === 'medium' ? 3.2 : 3.2
 
@@ -592,7 +610,7 @@ export function BalanceBubble3D({
         }}
         style={{ background: 'transparent' }}
       >
-        <BubbleScene state={state} expression={expression} />
+        <BubbleScene state={state} expression={expression} isGiggling={isGiggling} />
       </Canvas>
     </div>
   )
