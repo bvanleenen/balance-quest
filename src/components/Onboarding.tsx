@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Smartphone, Coffee, Moon, Heart, Activity, CheckSquare, Check } from 'lucide-react'
+import { Smartphone, Coffee, Moon, Activity, CheckSquare, Check } from 'lucide-react'
 import type { Habit } from '../gameState'
 import { HABIT_LABELS } from '../gameState'
 import { PixelLogo } from './PixelLogo'
+import { BalanceBubble3D } from './BalanceBubble3D'
 
 // Map habits to Lucide icons
 const HABIT_ICON_COMPONENTS: Record<Habit, React.ReactNode> = {
   'less-phone': <Smartphone size={20} />,
   'take-breaks': <Coffee size={20} />,
   'sleep-on-time': <Moon size={20} />,
-  'me-time': <Heart size={20} />,
   'more-exercise': <Activity size={20} />,
   'finish-tasks': <CheckSquare size={20} />,
 }
@@ -95,7 +95,7 @@ export function NameScreen({ onSubmit }: NameScreenProps) {
   }
 
   return (
-    <div className="flex-col flex-center p-lg text-center" style={{ minHeight: '100%' }}>
+    <div className="flex-col flex-center p-lg text-center" style={{ minHeight: '100%', paddingTop: 'calc(var(--safe-area-top, 0px) + var(--space-2xl))' }}>
       <motion.h2
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -165,10 +165,10 @@ export function HabitsScreen({ onSubmit }: HabitsScreenProps) {
     )
   }
 
-  const habits: Habit[] = ['less-phone', 'take-breaks', 'sleep-on-time', 'me-time', 'more-exercise', 'finish-tasks']
+  const habits: Habit[] = ['less-phone', 'take-breaks', 'sleep-on-time', 'more-exercise', 'finish-tasks']
 
   return (
-    <div className="flex-col p-lg" style={{ minHeight: '100%', position: 'relative', zIndex: 10 }}>
+    <div className="flex-col p-lg" style={{ minHeight: '100%', position: 'relative', zIndex: 10, paddingTop: 'calc(var(--safe-area-top, 0px) + var(--space-2xl))' }}>
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -305,49 +305,21 @@ interface BubbleIntroProps {
 
 export function BubbleIntroScreen({ playerName, onContinue }: BubbleIntroProps) {
   return (
-    <div className="flex-col flex-center p-lg text-center" style={{ minHeight: '100%', position: 'relative', zIndex: 10 }}>
-      {/* Animated bubble with pulse */}
+    <div className="flex-col flex-center p-lg text-center" style={{ minHeight: '100%', position: 'relative', zIndex: 10, paddingTop: 'calc(var(--safe-area-top, 0px) + var(--space-2xl))' }}>
+      {/* Real 3D bubble */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.3 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
+        initial={{ opacity: 0, y: -60 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, type: 'spring', stiffness: 120, damping: 10, bounce: 0.6 }}
         style={{
-          width: '140px',
-          height: '140px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #5EEAD4, var(--color-green), #059669)',
-          boxShadow: `
-            0 0 60px var(--color-green-glow),
-            0 0 100px rgba(52, 211, 153, 0.2),
-            inset 0 -20px 40px rgba(0, 0, 0, 0.2),
-            inset 0 20px 40px rgba(255, 255, 255, 0.2)
-          `,
-          marginBottom: 'var(--space-xl)',
+          width: '100%',
+          maxWidth: '400px',
+          height: '340px',
+          marginBottom: '-100px',
           position: 'relative',
         }}
       >
-        {/* Shine effect */}
-        <motion.div
-          animate={{
-            opacity: [0.3, 0.6, 0.3],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          style={{
-            position: 'absolute',
-            top: '15%',
-            left: '20%',
-            width: '30px',
-            height: '30px',
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.5)',
-            filter: 'blur(8px)',
-          }}
-        />
+        <BalanceBubble3D state="energetic" size="full" expression="happy" />
       </motion.div>
 
       <motion.h2

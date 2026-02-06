@@ -77,12 +77,12 @@ export function TimedBubbleAlert({ alert, sceneId, onDismiss }: TimedBubbleAlert
           onClick={handleDismiss}
           style={{
             position: 'fixed',
-            top: 'calc(var(--safe-area-top, 0px) + 200px)',
-            left: '50%',
-            transform: 'translateX(-50%)',
+            top: 'calc(var(--safe-area-top, 0px) + var(--space-xl))',
+            right: 'var(--space-md)',
+            left: 'var(--space-md)',
             zIndex: 100,
-            maxWidth: 'calc(100vw - 48px)',
-            width: '320px',
+            maxWidth: '360px',
+            margin: '0 auto',
           }}
         >
           {/* Glow effect */}

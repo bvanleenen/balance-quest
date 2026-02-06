@@ -1006,11 +1006,10 @@ body {
    Bubble Habitat - Nintendo-inspired companion window
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Wrapper for habitat + badges below */
+/* Wrapper for habitat */
 .bubble-habitat-wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
   width: 100%;
 }
 
@@ -1041,7 +1040,7 @@ body {
 /* Header bar with points */
 .habitat-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: var(--space-xs) var(--space-md);
   /* Compact header */
@@ -1138,15 +1137,52 @@ body {
   font-weight: 500;
 }
 
+/* Header badges - compact icons in header row */
+.habitat-header-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.habitat-badge-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(232, 120, 74, 0.15);
+  border: 1px solid rgba(232, 120, 74, 0.3);
+}
+
+.habitat-badge-mini .badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
 /* Top section wrapper - sticky habitat */
 .bubble-companion-section {
   position: sticky;
   top: 0;
   z-index: 50;
   background: var(--color-bg-dark);
-  padding: var(--space-sm) var(--space-md);
-  padding-top: var(--safe-area-top);
+  padding: var(--space-sm) var(--space-md) 0;
+  padding-top: calc(var(--safe-area-top) + var(--space-lg));
   width: 100%;
+}
+
+.bubble-companion-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -32px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--color-bg-dark), transparent);
+  pointer-events: none;
+  z-index: 49;
 }
 
 .sticky-header-content {
@@ -1166,7 +1202,7 @@ body {
   flex: 0 0 auto;
   text-align: center;
   margin-bottom: var(--space-md);
-  padding: 0 var(--space-md);
+  padding: var(--space-lg) var(--space-md) 0;
 }
 
 .scene-badges {
@@ -1486,7 +1522,7 @@ body {
 .view-container {
   min-height: 100vh;
   padding: var(--space-lg);
-  padding-top: calc(var(--safe-area-top) + var(--space-lg));
+  padding-top: calc(var(--safe-area-top) + 48px);
   padding-bottom: calc(var(--nav-bar-height) + var(--space-xl));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;

@@ -22,7 +22,6 @@ export type Habit =
   | 'less-phone'
   | 'take-breaks'
   | 'sleep-on-time'
-  | 'me-time'
   | 'more-exercise'
   | 'finish-tasks'
 
@@ -30,7 +29,6 @@ export const HABIT_LABELS: Record<Habit, string> = {
   'less-phone': 'Minder op mijn telefoon',
   'take-breaks': 'Genoeg pauzes nemen',
   'sleep-on-time': 'Op tijd naar bed',
-  'me-time': 'Tijd voor mezelf',
   'more-exercise': 'Meer bewegen',
   'finish-tasks': 'Taken afmaken',
 }
@@ -40,7 +38,6 @@ export const HABIT_ICONS: Record<Habit, string> = {
   'less-phone': 'Smartphone',
   'take-breaks': 'Coffee',
   'sleep-on-time': 'Moon',
-  'me-time': 'Heart',
   'more-exercise': 'Activity',
   'finish-tasks': 'CheckSquare',
 }
@@ -147,7 +144,7 @@ export const initialGameState: GameState = {
   choices: [],
   points: 0,
   badges: [],
-  bubbleScore: 7, // Start positive
+  bubbleScore: 5, // Start at content
   timeOfDay: 'afternoon',
   dayProgress: 0,
   filteredScenes: [],

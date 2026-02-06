@@ -27,21 +27,21 @@ interface BubbleHabitatProps {
 }
 
 export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, onBubbleClick }: BubbleHabitatProps) {
-  // Get badge info for earned badges (max 5 shown)
-  const displayBadges = earnedBadges.slice(-5).map(id => BADGES[id as keyof typeof BADGES]).filter(Boolean)
+  // Get badge info for earned badges (max 3 shown in header)
+  const displayBadges = earnedBadges.slice(-3).map(id => BADGES[id as keyof typeof BADGES]).filter(Boolean)
 
   // Get the actual icon component
   const getIconComponent = (iconName: string) => {
     const Icon = ICON_MAP[iconName]
-    return Icon ? <Icon size={14} /> : null
+    return Icon ? <Icon size={12} /> : null
   }
 
   return (
     <div className="bubble-habitat-wrapper">
       <div className="bubble-habitat">
-        {/* Header bar with points only */}
+        {/* Header bar: points left, badges right */}
         <div className="habitat-header">
-          {/* Points display - centered */}
+          {/* Points display - left */}
           <motion.div
             className="habitat-points"
             whileHover={{ scale: 1.05 }}
@@ -58,6 +58,29 @@ export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, o
             </motion.span>
             <span className="habitat-points-label">punten</span>
           </motion.div>
+
+          {/* Badges display - right */}
+          <div className="habitat-header-badges">
+            <AnimatePresence>
+              {displayBadges.map((badge, index) => (
+                <motion.div
+                  key={badge.name}
+                  className="habitat-badge-mini"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    delay: index * 0.08,
+                    type: 'spring',
+                    stiffness: 400,
+                    damping: 20
+                  }}
+                  title={badge.name}
+                >
+                  <span className="badge-icon">{getIconComponent(badge.icon)}</span>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Bubble container - 3D */}
@@ -69,30 +92,6 @@ export function BubbleHabitat({ bubbleState, points, earnedBadges, expression, o
             onClick={onBubbleClick}
           />
         </div>
-      </div>
-
-      {/* Badges display - below habitat */}
-      <div className="habitat-badges-row">
-        <AnimatePresence>
-          {displayBadges.map((badge, index) => (
-            <motion.div
-              key={badge.name}
-              className="habitat-badge-pill"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{
-                delay: index * 0.08,
-                type: 'spring',
-                stiffness: 400,
-                damping: 20
-              }}
-              title={badge.name}
-            >
-              <span className="badge-icon">{getIconComponent(badge.icon)}</span>
-              <span className="badge-name">{badge.name}</span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
       </div>
     </div>
   )

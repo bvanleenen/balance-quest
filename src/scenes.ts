@@ -14,15 +14,15 @@ export const SCENES: Scene[] = [
     location: 'Thuis',
     intro: '',
     text: 'Het is half vijf. Je komt net thuis na een lange dag op school.\n\nJe moeder vraagt of je mee-eet om 18:00. Je hebt een wiskundetoets morgen waarvoor je nog moet leren.\n\nNet op dat moment appt je beste vriend: "Heb je even? Slecht nieuws, moet je iets vertellen."',
-    relevantHabits: ['finish-tasks', 'me-time', 'less-phone'],
+    relevantHabits: ['finish-tasks', 'less-phone'],
     choices: [
       {
         id: 'vriend-bellen',
         label: 'Vriend bellen',
         subtext: 'Hij klinkt serieus. School kan wachten.',
         category: 'social',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'eerst-leren',
@@ -38,7 +38,7 @@ export const SCENES: Scene[] = [
         subtext: 'Als ik nu begin, kan ik na het eten bellen met een rustig hoofd.',
         category: 'work',
         points: 10,
-        bubbleEffect: 0,
+        bubbleEffect: 1,
       },
     ],
     bqResponses: {
@@ -87,23 +87,23 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zag een paar grappige dingen. Was wel ontspannend.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: 0,
+        bubbleEffect: -2,
       },
       {
         id: 'gemengd',
         label: '🤔 Gemengd',
         subtext: 'Sommige content was leuk, maar ik zocht eigenlijk iets anders.',
         category: 'rest',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'leeg',
         label: '😔 Een beetje leeg',
         subtext: 'Ik weet niet eens meer wat ik zag. De tijd is gewoon... weg.',
         category: 'rest',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
     ],
     bqResponses: {
@@ -155,8 +155,8 @@ export const SCENES: Scene[] = [
         label: 'Afmelden - te moe',
         subtext: 'Ik luister naar mijn lichaam. Vandaag even niet.',
         category: 'rest',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'zelf-trainen',
@@ -207,15 +207,15 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zet een timer en werk door, ook al wordt het niet mijn beste sessie.',
         category: 'work',
         points: 10,
-        bubbleEffect: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'morgenochtend',
         label: 'Morgenochtend vroeg',
         subtext: 'Als ik nu forceer, blijft het niet hangen. Ik zet mijn wekker vroeger.',
         category: 'rest',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'nog-30-min',
@@ -289,7 +289,7 @@ export const SCENES: Scene[] = [
         label: 'Nog 15 minuten, dan echt stoppen',
         subtext: 'Ik zet een timer. Om 23:30 gaat de telefoon weg.',
         category: 'scroll',
-        points: 5,
+        points: 0,
         bubbleEffect: -1,
       },
     ],
@@ -353,7 +353,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik heb er zelf voor gewerkt. Ze hadden eerder moeten beginnen.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: 0,
+        bubbleEffect: -1,
       },
     ],
     bqResponses: {
@@ -393,7 +393,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik had [X], maar ik weet niet zeker of het klopt.',
         category: 'social',
         points: 5,
-        bubbleEffect: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'niet-meedoen',
@@ -439,7 +439,7 @@ export const SCENES: Scene[] = [
     location: 'Schoolplein',
     intro: '',
     text: 'Je zit met je groep. Iemand laat een screenshot zien van een andere groepsapp.\n\nEr wordt gepraat over Lisa - diezelfde Lisa die het moeilijk heeft thuis. Iemand noemt haar "zielig" en "attentie-zoeker".\n\nDe screenshot gaat rond. Iedereen lacht een beetje ongemakkelijk.',
-    relevantHabits: ['me-time'],
+    relevantHabits: [],
     choices: [
       {
         id: 'niks-zeggen',
@@ -447,7 +447,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik bemoei me er niet mee. Het gaat vanzelf over.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: -2,
       },
       {
         id: 'uitspreken',
@@ -463,7 +463,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zeg nu niks, maar ik app straks iemand dat ik het niet oké vond.',
         category: 'social',
         points: 5,
-        bubbleEffect: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'weglopen',
@@ -504,7 +504,7 @@ export const SCENES: Scene[] = [
     location: 'Thuis',
     intro: 'Het is vrijdagmiddag. Het weekend begint.',
     text: 'Je hebt drie opties:\n\n1. Je ouders willen dit weekend het huis opruimen. Ze vragen of je helpt.\n2. Er is een feestje vanavond. Iedereen gaat.\n3. Je bent moe van de week. Je wilt eigenlijk niks.',
-    relevantHabits: ['me-time', 'finish-tasks'],
+    relevantHabits: ['finish-tasks'],
     timedAlert: {
       delay: 3,
       message: 'Je koos gisteren vooral voor anderen. Wat past vandaag bij jou?',
@@ -525,8 +525,8 @@ export const SCENES: Scene[] = [
         label: 'Naar het feestje',
         subtext: 'Het is vrijdag. Ik heb het verdiend. Het huis kan wachten.',
         category: 'social',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'thuisblijven',
@@ -542,7 +542,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik zeg ja tegen mijn ouders EN ja tegen het feestje. Komt wel goed.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: -3,
       },
     ],
     bqResponses: {
@@ -558,9 +558,7 @@ export const SCENES: Scene[] = [
         message: 'Je luistert naar je lichaam, {name}. Rust na een drukke week.',
         quote: 'De FOMO kriebelt een beetje. Maar je bent ook opgelucht.',
         badge: 'fomo-fighter',
-        habitMessage: {
-          'me-time': 'Dit is precies wat je wilde - tijd voor jezelf!',
-        },
+        habitMessage: {},
       },
       'alles-beloven': {
         message: 'Je zegt ja tegen alles. Herkenbaar.',
@@ -601,8 +599,8 @@ export const SCENES: Scene[] = [
         label: 'Niks fysiek, gewoon rusten',
         subtext: 'Mijn hoofd is moe. Mijn lichaam kan ook even niks.',
         category: 'rest',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'solo-hardlopen',
@@ -653,7 +651,7 @@ export const SCENES: Scene[] = [
     location: 'Varieert',
     intro: '',
     text: 'Je ligt op de bank. Je telefoon laat zien wat je mist: stories van het feestje, lachende gezichten, inside jokes waar je niet bij bent.',
-    relevantHabits: ['less-phone', 'me-time'],
+    relevantHabits: ['less-phone'],
     choices: [
       {
         id: 'stories-checken',
@@ -661,7 +659,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik kijk wat ze doen. Gewoon even.',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: -3,
       },
       {
         id: 'telefoon-weg-film',
@@ -692,7 +690,6 @@ export const SCENES: Scene[] = [
         message: 'Je beschermt jezelf tegen de vergelijking. Slim.',
         habitMessage: {
           'less-phone': 'Telefoon weg - precies je doel!',
-          'me-time': 'Film kijken is ook zelfzorg.',
         },
       },
       'vroeg-slapen': {
@@ -732,7 +729,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik wil weten wat ik gemist heb. Daarna sta ik op.',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: -2,
       },
       {
         id: 'direct-opstaan',
@@ -747,7 +744,7 @@ export const SCENES: Scene[] = [
         label: 'Snooze-modus: nog even liggen',
         subtext: 'Ik blijf nog even liggen zonder telefoon. Even wakker worden.',
         category: 'rest',
-        points: 5,
+        points: 0,
         bubbleEffect: 0,
       },
     ],
@@ -805,7 +802,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik heb zin in iets intensiefs. Een goede workout om de week te starten.',
         category: 'rest',
         points: 5,
-        bubbleEffect: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'plannen-later',
@@ -813,7 +810,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik beslis straks wel. Eerst even wakker worden.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: 0,
+        bubbleEffect: -2,
       },
     ],
     bqResponses: {
@@ -872,7 +869,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik check af en toe even. Oma merkt het niet.',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: -2,
       },
       {
         id: 'met-neef',
@@ -880,7 +877,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik ga naast mijn neef zitten. Dan zijn we samen "afwezig".',
         category: 'scroll',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: -2,
       },
       {
         id: 'oma-vragen',
@@ -927,7 +924,7 @@ export const SCENES: Scene[] = [
     location: 'Thuis',
     intro: 'Je bent thuis van oma. Morgen is zondag - laatste dag voor de schoolweek weer begint.',
     text: 'Je hebt een project dat maandag af moet. Je bent voor 60% klaar. Het is haalbaar, maar je moet er wel aan werken.\n\nJe vrienden appen: "Morgen naar het strand? Laatste mooie dag van het jaar!"',
-    relevantHabits: ['finish-tasks', 'me-time'],
+    relevantHabits: ['finish-tasks'],
     choices: [
       {
         id: 'project-afmaken',
@@ -942,8 +939,8 @@ export const SCENES: Scene[] = [
         label: 'Naar het strand, project \'s avonds',
         subtext: 'Ik ga naar het strand. \'s Avonds werk ik door.',
         category: 'social',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -1,
       },
       {
         id: 'ochtend-middag',
@@ -959,7 +956,7 @@ export const SCENES: Scene[] = [
         subtext: 'Ik beslis morgen wel. Nu hoef ik nog niet te kiezen.',
         category: 'neutral',
         points: 0,
-        bubbleEffect: -1,
+        bubbleEffect: -2,
       },
     ],
     bqResponses: {
@@ -1019,8 +1016,8 @@ export const SCENES: Scene[] = [
         label: '😩 Mwah, ik liep weer achter de feiten aan',
         subtext: 'Ik reageerde vooral, in plaats van te kiezen.',
         category: 'neutral',
-        points: 5,
-        bubbleEffect: 0,
+        points: 0,
+        bubbleEffect: -2,
       },
     ],
     bqResponses: {

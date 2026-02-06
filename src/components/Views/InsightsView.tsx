@@ -8,7 +8,7 @@ interface InsightsViewProps {
 }
 
 const CATEGORY_INFO = {
-  rest: { label: 'Voor jezelf', color: 'var(--color-green)', description: 'rust, pauze, me-time' },
+  rest: { label: 'Voor jezelf', color: 'var(--color-green)', description: 'rust, pauze' },
   work: { label: 'Verplichtingen', color: 'var(--color-primary)', description: 'school, huiswerk, taken' },
   social: { label: 'Voor anderen', color: '#F472B6', description: 'vrienden, familie, helpen' },
   scroll: { label: 'Scrollen', color: 'var(--color-orange)', description: 'telefoon, social media' },
@@ -25,10 +25,6 @@ function getHabitInsights(habits: Habit[], choices: GameState['choices'], stats:
 
   if (habits.includes('take-breaks') && stats.rest < total * 0.2) {
     insights.push('Je nam weinig pauzes deze dagen. Rust helpt je brein om informatie te verwerken.')
-  }
-
-  if (habits.includes('me-time') && stats.social > stats.rest) {
-    insights.push('Je koos vaker voor anderen dan voor jezelf. Wat heb jij nodig?')
   }
 
   if (habits.includes('finish-tasks') && stats.work >= total * 0.3) {

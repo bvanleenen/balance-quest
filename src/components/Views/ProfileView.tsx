@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Smartphone, Coffee, Moon, Heart, Activity, CheckSquare, Target, Users, Sunrise, Award, Lock } from 'lucide-react'
+import { Smartphone, Coffee, Moon, Activity, CheckSquare, Target, Users, Sunrise, Award, Lock } from 'lucide-react'
 import type { GameState, Habit } from '../../gameState'
 import { HABIT_LABELS, BADGES, getBubbleState, BUBBLE_STATE_INFO } from '../../gameState'
 
@@ -12,7 +12,6 @@ const HABIT_ICON_MAP: Record<string, React.ReactNode> = {
   Smartphone: <Smartphone size={18} />,
   Coffee: <Coffee size={18} />,
   Moon: <Moon size={18} />,
-  Heart: <Heart size={18} />,
   Activity: <Activity size={18} />,
   CheckSquare: <CheckSquare size={18} />,
 }
@@ -30,7 +29,6 @@ const HABIT_ICONS: Record<Habit, string> = {
   'less-phone': 'Smartphone',
   'take-breaks': 'Coffee',
   'sleep-on-time': 'Moon',
-  'me-time': 'Heart',
   'more-exercise': 'Activity',
   'finish-tasks': 'CheckSquare',
 }

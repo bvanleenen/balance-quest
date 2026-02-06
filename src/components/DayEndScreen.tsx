@@ -43,7 +43,7 @@ export function DayEndScreen({
       style={{
         minHeight: '100vh',
         padding: 'var(--space-xl)',
-        paddingTop: 'calc(var(--safe-area-top, 0px) + var(--space-xl))',
+        paddingTop: 'calc(var(--safe-area-top, 0px) + var(--space-2xl))',
         paddingBottom: 'calc(var(--safe-area-bottom, 0px) + var(--space-xl))',
         display: 'flex',
         flexDirection: 'column',
